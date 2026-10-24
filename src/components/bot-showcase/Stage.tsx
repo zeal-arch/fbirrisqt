@@ -6,7 +6,6 @@ import { HERO_BEATS, booksFrom } from '../../data/botShowcase';
 import { usePresenter } from '../../hooks/usePresenter';
 import Phone from './Phone';
 import CrmWindow from './CrmWindow';
-import BotCard from './BotCard';
 import { buildFeed, chipFor, type FeedTone } from './BooksFeed';
 import Backdrop from './Backdrop';
 import FlowLines from './FlowLines';
@@ -25,11 +24,13 @@ const ease = [0.22, 1, 0.36, 1] as const;
 type Presenter = ReturnType<typeof usePresenter>;
 interface Geo {
   chip: { x0: number; y0: number; x1: number; y1: number };
-  flow: { x1: number; y1: number; h: number };
+  flow: { x0: number; y0a: number; y0b: number; x1: number; y1: number; h: number };
+  /* lines from the phone's right edge fanning out across the CRM's left edge */
+  flowRight: { x0: number; y0a: number; y0b: number; x1: number; y1: number; h: number };
 }
 
 const CHIP_DOT: Record<FeedTone, string> = {
-  posted: 'bg-emerald-500', wait: 'bg-black/30', pm: 'bg-amber-500', blocked: 'bg-[#c2410c]', progress: 'bg-sky-500',
+  posted: 'bg-black/35', wait: 'bg-black/20', pm: 'bg-primary', blocked: 'bg-primary', progress: 'bg-black/35',
 };
 
 export default function Stage() {
@@ -66,13 +67,17 @@ export default function Stage() {
       const f = frameRef.current?.getBoundingClientRect();
       const ph = phoneRef.current?.getBoundingClientRect();
       const l = listRef.current?.getBoundingClientRect();
-      if (!f || !ph || !l || l.left < ph.right) { setGeo(null); return; }
+      /* stacked (phone-width) layout: the CRM sits below the phone, so no lines or chip */
+      if (!f || !ph || !l || l.top > ph.bottom) { setGeo(null); return; }
       /* the frame is zoomed to 88% on wide screens; convert screen pixels back to the frame's own */
       const z = parseFloat(getComputedStyle(frameRef.current!).zoom) || 1;
       const bubbleY = (ph.top + ph.height * 0.7 - f.top) / z;
       setGeo({
         chip: { x0: (ph.right - 70 - f.left) / z, y0: bubbleY, x1: (l.left + 150 - f.left) / z, y1: (l.top + 24 - f.top) / z },
-        flow: { x1: (ph.left + 4 - f.left) / z, y1: (ph.top + ph.height / 2 - f.top) / z, h: f.height / z },
+        /* the site: lines spread along the frame's left edge, gathering into the phone */
+        flow: { x0: 0, y0a: -120, y0b: f.height / z + 120, x1: (ph.left + 4 - f.left) / z, y1: (ph.top + ph.height / 2 - f.top) / z, h: f.height / z },
+        /* the bot: lines fan out of the phone across the CRM's left edge */
+        flowRight: { x0: (l.left - f.left) / z, y0a: (l.top - 150 - f.top) / z, y0b: (l.bottom - f.top) / z, x1: (ph.right - 4 - f.left) / z, y1: (ph.top + ph.height / 2 - f.top) / z, h: f.height / z },
       });
     };
     measure();
@@ -90,23 +95,20 @@ export default function Stage() {
       <div ref={frameRef} className="relative overflow-hidden rounded-[22px] ring-1 ring-black/[0.04] lg:[zoom:0.88]">
         <Backdrop />
         {geo && <FlowLines {...geo.flow} pulseKey={beat.message && p.reached(p.index, 'message') ? p.index : null} lane={p.index} />}
+        {geo && <FlowLines {...geo.flowRight} outward pulseKey={chip ? p.index : null} lane={p.index + 1} />}
 
-        <div className="relative flex flex-col items-center gap-8 px-4 py-10 lg:h-[760px] lg:flex-row lg:items-center lg:justify-center lg:gap-10 lg:px-8 lg:py-0 xl:gap-10 xl:px-8">
-          {/* left: what the bot is thinking (wide screens; narrower screens show it inside the CRM) */}
-          <motion.div
-            className="hidden w-[270px] shrink-0 self-center xl:block"
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.25, ease }}
-          >
-            <motion.div {...(reducedMotion ? {} : { animate: { y: [0, -5, 0] }, transition: { duration: 6, repeat: Infinity, ease: 'easeInOut' as const } })}>
-              <BotCard p={p} />
-            </motion.div>
-          </motion.div>
+        {/* Wide screens: one left-to-right story. Lines from the site (the frame's left edge) gather into the
+            phone; lines fan out of the phone into the CRM, where the bot's reasoning sits beside the feed.
+            Narrower screens keep the simple row/stack. */}
+        {/* one label over each half, on a shared line (wide screens) */}
+        <div className="pointer-events-none absolute inset-x-0 top-[96px] z-30 hidden xl:block" aria-hidden="true">
+          <HalfLabel n="01" className="left-[26%] -translate-x-1/2">In the WhatsApp group</HalfLabel>
+          <HalfLabel n="02" className="left-[calc(26%+265px)]">In your firstbriq CRM</HalfLabel>
+        </div>
 
+        <div className="relative flex flex-col items-center gap-8 px-4 py-10 lg:h-[760px] lg:flex-row lg:items-center lg:justify-center lg:gap-16 lg:px-8 lg:py-0 xl:block xl:h-[900px] xl:p-0">
           {/* the phone */}
-          <div className="shrink-0" style={{ perspective: 1400 }}>
+          <div className="relative z-20 shrink-0 xl:absolute xl:left-[26%] xl:top-1/2 xl:-translate-x-1/2 xl:-translate-y-1/2" style={{ perspective: 1400 }}>
             <motion.div
               ref={phoneRef}
               initial={{ opacity: 0, y: 70, rotateX: 16 }}
@@ -120,20 +122,23 @@ export default function Stage() {
 
           {/* the CRM, with the PM peeking over it */}
           <motion.div
-            className="relative w-full max-w-[680px] lg:mt-14 lg:w-[600px] xl:w-[660px]"
+            className="relative z-10 w-full max-w-[760px] lg:w-[600px] xl:absolute xl:left-[calc(26%+265px)] xl:top-1/2 xl:mt-0 xl:w-[720px] xl:-translate-y-1/2"
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.2, ease }}
           >
-            <div className="absolute -top-[84px] right-10 z-0 hidden overflow-hidden xl:block" style={{ height: 88 }}>
-              <PeekerHead mood={mood} nodKey={mood === 'happy' && landed ? p.index : -1} />
-            </div>
-            <div className="relative z-10">
-              <CrmWindow ref={listRef} p={p} feed={feed} landing={landing} posted={posted} waiting={books.pm.length} blocked={books.blocked} bills={bills} />
-            </div>
-            <div className="absolute -top-[9px] right-[38px] z-20 hidden xl:block">
-              <PeekerHands />
+            {/* zoomed up inside, so its text sits closer to the phone's in size (zooming the outer box would also scale its position) */}
+            <div className="relative xl:[zoom:1.1]">
+              <div className="absolute -top-[84px] right-10 z-0 hidden overflow-hidden xl:block" style={{ height: 88 }}>
+                <PeekerHead mood={mood} nodKey={mood === 'happy' && landed ? p.index : -1} />
+              </div>
+              <div className="relative z-10">
+                <CrmWindow ref={listRef} p={p} feed={feed} landing={landing} posted={posted} waiting={books.pm.length} blocked={books.blocked} bills={bills} />
+              </div>
+              <div className="absolute -top-[9px] right-[38px] z-20 hidden xl:block">
+                <PeekerHands />
+              </div>
             </div>
           </motion.div>
         </div>
@@ -163,6 +168,15 @@ export default function Stage() {
 
       <Controls p={p} />
     </div>
+  );
+}
+
+function HalfLabel({ n, className, children }: { n: string; className: string; children: ReactNode }) {
+  return (
+    <span className={cn('absolute flex items-center gap-2 whitespace-nowrap rounded-full bg-white/70 px-3 py-1 text-[12.5px] text-black/60 ring-1 ring-black/[0.05] backdrop-blur', className)}>
+      <span className="tabular-nums text-black/30">{n}</span>
+      {children}
+    </span>
   );
 }
 

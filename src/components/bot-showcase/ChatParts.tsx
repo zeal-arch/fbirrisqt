@@ -1,5 +1,6 @@
 import { cn } from '../../lib/utils';
 import { PEOPLE, type Bill, type ChatMessage } from '../../data/botShowcase';
+import BotMark from './BotMark';
 
 /* WhatsApp (Android, light theme) message pieces, drawn to match the real app:
    Roboto, 7px bubble radius with a tail on the first bubble of a run, inline timestamps, blue ticks. */
@@ -158,8 +159,8 @@ export function BotBubble({ text, time, first }: { text: string; time: string; f
       {first && <Tail out={false} color={IN} />}
       <div className={cn('rounded-[7.5px] bg-white px-[7px] pb-[5px] pt-[4px] text-[12.5px] leading-[16.5px] text-[#111b21]', bubbleShadow, first && 'rounded-tl-none')}>
         {first && (
-          <div className="flex items-center gap-1 text-[11.5px] font-medium leading-[15px] text-[#027eb5]">
-            firstbriq Site Bot <Verified />
+          <div className="flex items-center gap-1 text-[11.5px] font-medium leading-[15px] text-primary">
+            <BotMark size={13} /> firstbriq Site Bot <Verified />
           </div>
         )}
         <span className="break-words">

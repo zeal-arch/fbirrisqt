@@ -1,9 +1,10 @@
-import { forwardRef, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { forwardRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowRight, Check, ChevronDown, Lock, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { HERO_BEATS, PEOPLE } from '../../data/botShowcase';
 import type { usePresenter } from '../../hooks/usePresenter';
+import BotMark from './BotMark';
 
 /* Summation-style agent panel: the message the bot is reading, a collapsible "Ran 3 checks" list,
    then what it decided. Shows only the current beat, so it stays calm. */
@@ -22,15 +23,16 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
   return (
     <div ref={ref} className={cn('p-4', !bare && 'rounded-2xl bg-white/95 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_30px_60px_-30px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.06] backdrop-blur', className)}>
       <div className="mb-3 flex items-center gap-2">
-        <span className="grid h-6 w-6 place-items-center rounded-md bg-black text-[10px] font-bold text-white" aria-hidden="true">SB</span>
+        <BotMark size={24} />
         <span className="text-[13px] font-semibold">Site Bot</span>
         <span className="ml-auto flex items-center gap-1.5 rounded-full bg-black/[0.04] px-2 py-0.5 text-[11px] text-black/55">
-          <span className={cn('h-1.5 w-1.5 rounded-full', status === 'Done' ? 'bg-emerald-500' : status === 'Listening' ? 'bg-black/25' : 'animate-pulse bg-amber-500')} />
+          <span className={cn('h-1.5 w-1.5 rounded-full', status === 'Done' ? 'bg-black/35' : status === 'Listening' ? 'bg-black/20' : 'animate-pulse bg-primary')} />
           {status}
         </span>
       </div>
 
-      <SmoothHeight>
+      {/* fixed height, so the card never grows or shrinks between messages */}
+      <div className={cn('overflow-hidden', bare ? 'h-[300px] [mask-image:linear-gradient(to_bottom,#000_85%,transparent)]' : 'h-[310px]')}>
       <AnimatePresence mode="wait">
         <motion.div key={p.index} initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: -6, filter: 'blur(4px)' }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
           {p.phase === 'typing' ? (
@@ -60,7 +62,7 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
                   <ul className="mt-1.5 flex flex-col gap-1 pl-1">
                     {beat.checks.slice(0, checks).map(c => (
                       <motion.li key={c.text} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-2 text-[12.5px] leading-snug text-black/75">
-                        {c.ok ? <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" /> : <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600" />}
+                        {c.ok ? <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-black/45" /> : <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />}
                         {c.text}
                       </motion.li>
                     ))}
@@ -88,27 +90,9 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
           )}
         </motion.div>
       </AnimatePresence>
-      </SmoothHeight>
+      </div>
     </div>
   );
 });
-
-/* Animates the card's height to fit its content, so it grows and shrinks smoothly instead of jumping. */
-function SmoothHeight({ children }: { children: ReactNode }) {
-  const inner = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number | 'auto'>('auto');
-  useLayoutEffect(() => {
-    const el = inner.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => setHeight(el.offsetHeight));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-  return (
-    <motion.div animate={{ height }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }} style={{ overflow: 'hidden' }}>
-      <div ref={inner}>{children}</div>
-    </motion.div>
-  );
-}
 
 export default BotCard;

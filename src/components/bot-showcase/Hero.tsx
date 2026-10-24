@@ -35,11 +35,13 @@ export default function Hero() {
           Now your books do too.
         </motion.h1>
 
-        <motion.p {...fadeUp(0.16)} className="mt-8 max-w-[540px] text-[16px] leading-[1.45] tracking-[-0.01em] text-black/55">
+        {/* the description on the left, the buttons on the right of the same row */}
+        <div className="mt-8 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <motion.p {...fadeUp(0.16)} className="max-w-[540px] text-[16px] leading-[1.45] tracking-[-0.01em] text-black/55">
           Site Bot reads the bills, voice notes and payment requests in your project group, and keeps the books for your PM. When it isn’t sure about money, it asks.
         </motion.p>
 
-        <motion.div {...fadeUp(0.24)} className="mt-12 flex flex-wrap items-center justify-between gap-4">
+        <motion.div {...fadeUp(0.24)} className="shrink-0">
           <span className="flex flex-wrap items-center gap-3">
             <a href={VOLUNTEER_MAILTO} className="inline-flex h-10 items-center gap-2.5 rounded-full bg-black py-1 pl-5 pr-1 text-[14px] font-normal text-white transition-colors hover:bg-black/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
               Volunteer your site
@@ -50,6 +52,7 @@ export default function Hero() {
             </a>
           </span>
         </motion.div>
+        </div>
 
         <motion.div id="stage" {...fadeUp(0.32)} className="mt-16 scroll-mt-6">
           <Stage />

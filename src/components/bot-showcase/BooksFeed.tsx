@@ -81,11 +81,11 @@ export function chipFor(i: number): { label: string; tone: FeedTone } | null {
 }
 
 const TONE_ICON: Record<FeedTone, { icon: LucideIcon; cls: string }> = {
-  posted: { icon: CheckCircle2, cls: 'text-emerald-600' },
-  wait: { icon: Clock3, cls: 'text-black/40' },
-  pm: { icon: AlertCircle, cls: 'text-amber-600' },
-  blocked: { icon: Ban, cls: 'text-[#c2410c]' },
-  progress: { icon: ActivityIcon, cls: 'text-sky-600' },
+  posted: { icon: CheckCircle2, cls: 'text-black/45' },
+  wait: { icon: Clock3, cls: 'text-black/30' },
+  pm: { icon: AlertCircle, cls: 'text-primary' },
+  blocked: { icon: Ban, cls: 'text-primary' },
+  progress: { icon: ActivityIcon, cls: 'text-black/45' },
 };
 
 const LOGO: Record<string, { icon: LucideIcon; tint: string }> = {
@@ -128,7 +128,7 @@ const BooksFeed = forwardRef<HTMLUListElement, Props>(function BooksFeed({ items
         </motion.span>
       </div>
 
-      <ul ref={listRef} className={cn(bare ? "h-[268px]" : "h-[372px]", "overflow-hidden [mask-image:linear-gradient(to_bottom,#000_80%,transparent)]")}>
+      <ul ref={listRef} className={cn(bare ? "h-[340px]" : "h-[372px]", "overflow-hidden [mask-image:linear-gradient(to_bottom,#000_80%,transparent)]")}>
         <AnimatePresence initial={false}>
           {items.map(it => {
             const fresh = it.at === current && landing;
@@ -142,8 +142,10 @@ const BooksFeed = forwardRef<HTMLUListElement, Props>(function BooksFeed({ items
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], layout: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }}
-                className={cn('relative flex items-center gap-2.5 border-b border-black/[0.05] px-3.5 py-[9px] transition-colors duration-1000', fresh ? 'bg-[#faf8f5]' : 'bg-white')}
+                className={cn('relative flex items-center gap-2.5 border-b border-black/[0.05] px-3.5 py-[9px] transition-colors duration-700', fresh ? 'bg-[#fdf1ea]' : 'bg-white')}
               >
+                {/* the row the bot just wrote lights up in firstbriq orange while its reply shows in the chat */}
+                <span className={cn('absolute inset-y-0 left-0 w-[3px] bg-primary transition-opacity duration-700', fresh ? 'opacity-100' : 'opacity-0')} aria-hidden="true" />
                 <span className="h-3.5 w-3.5 shrink-0 rounded-[4px] border border-black/10" aria-hidden="true" />
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg ring-1 ring-black/[0.04]" style={{ background: logo.tint }} aria-hidden="true">
                   <logo.icon className="h-4 w-4 text-black/70" strokeWidth={1.8} />

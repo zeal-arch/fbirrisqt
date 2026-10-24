@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
    Mood follows the bot: a smile when things post, a small "o" when something needs the PM. */
 
 export type Mood = 'happy' | 'alert' | 'neutral';
-const line = { fill: 'none', stroke: '#111', strokeWidth: 2.2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+export const line = { fill: 'none', stroke: '#111', strokeWidth: 2.2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
 
 export function PeekerHead({ mood, nodKey = -1 }: { mood: Mood; nodKey?: number }) {
   return (
