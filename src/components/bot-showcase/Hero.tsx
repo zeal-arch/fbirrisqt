@@ -5,7 +5,6 @@ import { VOLUNTEER_MAILTO } from '../../data/botShowcase';
 import Stage from './Stage';
 import StageB from './StageB';
 import StageC from './StageC';
-import BillHero from './BillHero';
 
 /* Amplemarket-style hero: a centred two-line headline, one black button and a quiet text link,
    then the product itself. Colours stay neutral (near-white page, black type). */
@@ -32,7 +31,7 @@ export default function Hero({ design = 'a' }: { design?: 'a' | 'b' | 'c' }) {
         </a>
       </header>
 
-      {/* summation.com-style intro: left-aligned headline, then the text and buttons beside the bill scan */}
+      {/* summation.com-style intro: left-aligned headline, then the text and the buttons on one row */}
       <div className="mx-auto max-w-7xl px-4 pb-16 pt-14 text-left md:px-8 md:pt-[72px]">
         <motion.h1 {...fadeUp(0.08)} className="max-w-[760px] font-display text-[34px] font-normal leading-[1.05] tracking-[-0.04em] min-[810px]:text-[42px] min-[1200px]:text-[52px] min-[1400px]:text-[58px]">
           Your site runs on WhatsApp.
@@ -40,14 +39,13 @@ export default function Hero({ design = 'a' }: { design?: 'a' | 'b' | 'c' }) {
           Now your books do too.
         </motion.h1>
 
-        {/* text and buttons on the left; the hero moment, Site Bot reading a bill, on the right */}
-        <div className="mt-6 grid items-center gap-12 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)]">
-        <div>
+        {/* the description on the left, the buttons on the right of the same row */}
+        <div className="mt-6 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <motion.p {...fadeUp(0.16)} className="max-w-[540px] text-[16px] font-normal leading-[1.2] min-[810px]:text-[17px] min-[1200px]:text-[19px] min-[1400px]:text-[20px] tracking-[-0.01em] text-black/55">
           Site Bot reads the bills, voice notes and payment requests in your project group, and keeps the books for your PM. When it isn’t sure about money, it asks.
         </motion.p>
 
-        <motion.div {...fadeUp(0.24)} className="mt-8">
+        <motion.div {...fadeUp(0.24)} className="shrink-0">
           <span className="flex flex-wrap items-center gap-3">
             <a href={VOLUNTEER_MAILTO} className="inline-flex h-10 items-center gap-2.5 rounded-full bg-black py-1 pl-5 pr-1 text-[14px] font-normal text-white transition-colors hover:bg-black/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
               Volunteer your site
@@ -57,11 +55,6 @@ export default function Hero({ design = 'a' }: { design?: 'a' | 'b' | 'c' }) {
               Watch a day on site
             </a>
           </span>
-        </motion.div>
-        </div>
-
-        <motion.div {...fadeUp(0.3)}>
-          <BillHero />
         </motion.div>
         </div>
 

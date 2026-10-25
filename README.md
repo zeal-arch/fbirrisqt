@@ -1,8 +1,7 @@
 # Site Bot showcase
 
 A single hero page for the WhatsApp site bot, set in Geist (a free grotesk close to summation.com's Bureau Sans).
-Beside the headline, the hero moment: a handwritten bill arrives in the site's WhatsApp group and Site Bot scans it,
-with what it read appearing next to it. Below, one rounded frame on a flat background plays a whole site day: an iPhone
+Below the headline, one rounded frame on a flat background plays a whole site day: an iPhone
 with the WhatsApp group, and the firstbriq CRM filling in as the bot reads each message (three layouts, picked with
 `?design=b` or `?design=c`). Built on the same stack as the firstbriq frontend (Vite, React 19, TypeScript, Tailwind 4,
 `motion`, `lucide-react`) so it can be moved in without changes.
@@ -31,9 +30,7 @@ npm run build    # static site in dist/
 | `src/components/bot-showcase/CrmWindow.tsx` | The firstbriq CRM window: project bar, numbers, feed and the bot panel |
 | `src/components/bot-showcase/BooksFeed.tsx` | The live "Recently added" books list, and what each beat adds to it |
 | `src/components/bot-showcase/BotMark.tsx` | Site Bot's one avatar (firstbriq orange), used in the chat and in the CRM |
-| `src/components/bot-showcase/Backdrop.tsx` | The stage background: one flat warm off-white |
-| `src/components/bot-showcase/BillHero.tsx` | The hero moment beside the headline: a bill photo in the WhatsApp group being scanned, and what Site Bot read from it |
-| `src/components/bot-showcase/Phone.tsx` | An iPhone running WhatsApp for iOS (light theme), on the chat wallpaper in `src/assets/chat-wallpaper.webp` |
+| `src/components/bot-showcase/Backdrop.tsx` | The stage background: one flat warm off-white || `src/components/bot-showcase/Phone.tsx` | An iPhone running WhatsApp for iOS (light theme), on the chat wallpaper in `src/assets/chat-wallpaper.webp` |
 | `src/components/bot-showcase/ChatParts.tsx` | WhatsApp-style bubbles, voice notes, bill photos |
 | `src/data/botShowcase.ts` | The scripted day and the call-to-action link. Edit text here |
 | `src/hooks/usePresenter.ts` | Plays the scripted beats |
