@@ -1,9 +1,9 @@
 # Site Bot showcase
 
 A single hero page for the WhatsApp site bot, set in Geist (a free grotesk close to summation.com's Bureau Sans).
-Below the headline, one rounded frame on a flat background plays a whole site day: an iPhone
-with the WhatsApp group, and the firstbriq CRM filling in as the bot reads each message (three layouts, picked with
-`?design=b` or `?design=c`). Built on the same stack as the firstbriq frontend (Vite, React 19, TypeScript, Tailwind 4,
+Below the headline, the product plays one site day: a script line, an iPhone with the site's WhatsApp group, and what
+Site Bot files in the firstbriq CRM. Four sections follow, each answering a PM's next question, and end with the pilot
+call to action. Built on the same stack as the firstbriq frontend (Vite, React 19, TypeScript, Tailwind 4,
 `motion`, `lucide-react`) so it can be moved in without changes.
 Everything on it is a scripted example; no real AI or WhatsApp account is connected.
 
@@ -21,16 +21,15 @@ npm run build    # static site in dist/
 |---|---|
 | `src/pages/BotShowcase.tsx` | The page |
 | `src/components/bot-showcase/Hero.tsx` | Header, headline, call to action |
-| `src/components/bot-showcase/Stage.tsx` | Design A: the phone and the CRM side by side, and the Play / Step / Restart controls |
-| `src/components/bot-showcase/StageB.tsx` | Design B: the phone at the centre, what comes in from site on the left, what the bot files in the CRM on the right. Open it with `?design=b` |
-| `src/components/bot-showcase/StageC.tsx` | Design C: a scroll story. The phone and CRM stay pinned while each scroll step shows one moment of the day. Open it with `?design=c` |
+| `src/components/bot-showcase/Stage.tsx` | The hero stage: a script line over an iPhone with the site's WhatsApp group, and what Site Bot files in the firstbriq CRM beside it |
+| `src/components/bot-showcase/Sections.tsx` | Sections 2–5: what it reads, money safety, nothing changes for your team, and the pilot call to action |
+| `src/components/bot-showcase/Controls.tsx` | Play / Step / Restart under the stage |
+| `src/components/bot-showcase/AnimatedNumber.tsx` | Numbers that count up instead of jumping |
 | `src/components/bot-showcase/PmApprove.tsx` | The PM's cursor clicking Approve in the CRM, before an advance is posted |
-| `src/components/bot-showcase/status.ts` | The one set of status colours all three designs use |
-| `src/components/bot-showcase/BotCard.tsx` | The Site Bot panel inside the CRM: the message, "Ran N checks" and the decision |
-| `src/components/bot-showcase/CrmWindow.tsx` | The firstbriq CRM window: project bar, numbers, feed and the bot panel |
-| `src/components/bot-showcase/BooksFeed.tsx` | The live "Recently added" books list, and what each beat adds to it |
+| `src/components/bot-showcase/status.ts` | The one set of status colours the page uses |
 | `src/components/bot-showcase/BotMark.tsx` | Site Bot's one avatar (firstbriq orange), used in the chat and in the CRM |
-| `src/components/bot-showcase/Backdrop.tsx` | The stage background: one flat warm off-white || `src/components/bot-showcase/Phone.tsx` | An iPhone running WhatsApp for iOS (light theme), on the chat wallpaper in `src/assets/chat-wallpaper.webp` |
+| `src/components/bot-showcase/Backdrop.tsx` | The blurred periwinkle-and-terracotta mosaic behind the stage and the pilot section |
+| `src/components/bot-showcase/Phone.tsx` | An iPhone running WhatsApp for iOS (light theme), on the chat wallpaper in `src/assets/chat-wallpaper.webp` |
 | `src/components/bot-showcase/ChatParts.tsx` | WhatsApp-style bubbles, voice notes, bill photos |
 | `src/data/botShowcase.ts` | The scripted day and the call-to-action link. Edit text here |
 | `src/hooks/usePresenter.ts` | Plays the scripted beats |
