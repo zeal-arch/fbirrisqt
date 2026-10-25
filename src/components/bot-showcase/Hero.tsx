@@ -4,6 +4,7 @@ import { FirstbriqLogo } from '../ui/FirstbriqLogo';
 import { VOLUNTEER_MAILTO } from '../../data/botShowcase';
 import Stage from './Stage';
 import StageB from './StageB';
+import StageC from './StageC';
 
 /* Amplemarket-style hero: a centred two-line headline, one black button and a quiet text link,
    then the product itself. Colours stay neutral (near-white page, black type). */
@@ -14,8 +15,9 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] as const },
 });
 
-/* design: 'a' = phone and CRM side by side, 'b' = phone at the centre with what comes in and what goes out */
-export default function Hero({ design = 'a' }: { design?: 'a' | 'b' }) {
+/* design: 'a' = phone and CRM side by side, 'b' = phone at the centre with what comes in and what goes out,
+   'c' = a scroll story with the phone and CRM pinned */
+export default function Hero({ design = 'a' }: { design?: 'a' | 'b' | 'c' }) {
   return (
     <section className="min-h-screen bg-[#fdfcfc] font-display text-black">
       <header className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
@@ -57,7 +59,7 @@ export default function Hero({ design = 'a' }: { design?: 'a' | 'b' }) {
         </div>
 
         <motion.div id="stage" {...fadeUp(0.32)} className="mt-16 scroll-mt-6">
-          {design === 'b' ? <StageB /> : <Stage />}
+          {design === 'c' ? <StageC /> : design === 'b' ? <StageB /> : <Stage />}
         </motion.div>
 
         <p className="mt-8 text-center text-[12px] text-black/35">Scripted example. Names, shops and amounts are illustrative.</p>
