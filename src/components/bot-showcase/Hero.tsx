@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { FirstbriqLogo } from '../ui/FirstbriqLogo';
 import { VOLUNTEER_MAILTO } from '../../data/botShowcase';
 import Stage from './Stage';
+import StageB from './StageB';
 
 /* Amplemarket-style hero: a centred two-line headline, one black button and a quiet text link,
    then the product itself. Colours stay neutral (near-white page, black type). */
@@ -13,7 +14,8 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] as const },
 });
 
-export default function Hero() {
+/* design: 'a' = phone and CRM side by side, 'b' = phone at the centre with what comes in and what goes out */
+export default function Hero({ design = 'a' }: { design?: 'a' | 'b' }) {
   return (
     <section className="min-h-screen bg-[#fdfcfc] font-display text-black">
       <header className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
@@ -28,16 +30,16 @@ export default function Hero() {
       </header>
 
       {/* summation.com-style intro: left-aligned headline and text, buttons on the left, a pill on the right */}
-      <div className="mx-auto max-w-7xl px-4 pb-16 pt-14 text-left md:px-8 md:pt-20">
-        <motion.h1 {...fadeUp(0.08)} className="max-w-[760px] font-display text-[34px] font-normal leading-[1.08] tracking-[-0.04em] sm:text-[44px] md:text-[52px]">
+      <div className="mx-auto max-w-7xl px-4 pb-16 pt-14 text-left md:px-8 md:pt-[72px]">
+        <motion.h1 {...fadeUp(0.08)} className="max-w-[760px] font-display text-[34px] font-normal leading-[1.05] tracking-[-0.04em] min-[810px]:text-[42px] min-[1200px]:text-[52px] min-[1400px]:text-[58px]">
           Your site runs on WhatsApp.
           <br />
           Now your books do too.
         </motion.h1>
 
         {/* the description on the left, the buttons on the right of the same row */}
-        <div className="mt-8 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-        <motion.p {...fadeUp(0.16)} className="max-w-[540px] text-[16px] leading-[1.45] tracking-[-0.01em] text-black/55">
+        <div className="mt-6 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <motion.p {...fadeUp(0.16)} className="max-w-[540px] text-[16px] font-normal leading-[1.2] min-[810px]:text-[17px] min-[1200px]:text-[19px] min-[1400px]:text-[20px] tracking-[-0.01em] text-black/55">
           Site Bot reads the bills, voice notes and payment requests in your project group, and keeps the books for your PM. When it isn’t sure about money, it asks.
         </motion.p>
 
@@ -55,7 +57,7 @@ export default function Hero() {
         </div>
 
         <motion.div id="stage" {...fadeUp(0.32)} className="mt-16 scroll-mt-6">
-          <Stage />
+          {design === 'b' ? <StageB /> : <Stage />}
         </motion.div>
 
         <p className="mt-8 text-center text-[12px] text-black/35">Scripted example. Names, shops and amounts are illustrative.</p>

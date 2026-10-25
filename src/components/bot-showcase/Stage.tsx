@@ -182,7 +182,7 @@ function HalfLabel({ n, className, children }: { n: string; className: string; c
 
 /* ---------- controls ---------- */
 
-function Controls({ p }: { p: Presenter }) {
+export function Controls({ p }: { p: Presenter }) {
   const beat = HERO_BEATS[p.index];
   return (
     <div className="mt-6 flex flex-col items-center gap-2">

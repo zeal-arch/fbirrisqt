@@ -23,6 +23,7 @@ npm run build    # static site in dist/
 | `src/pages/BotShowcase.tsx` | The page |
 | `src/components/bot-showcase/Hero.tsx` | Header, headline, call to action |
 | `src/components/bot-showcase/Stage.tsx` | The frame and layout, the callout line, the flying chip and the Play / Step / Restart controls |
+| `src/components/bot-showcase/StageB.tsx` | Design B: the phone at the centre, what comes in from site on the left, what the bot files in the CRM on the right. Open it with `?design=b` or the switch at the bottom of the page (the switch is for review; remove it before moving the page) |
 | `src/components/bot-showcase/BotCard.tsx` | The Site Bot panel inside the CRM: the message, "Ran N checks" and the decision |
 | `src/components/bot-showcase/CrmWindow.tsx` | The firstbriq CRM window: project bar, numbers, feed and the bot panel |
 | `src/components/bot-showcase/BooksFeed.tsx` | The live "Recently added" books list, and what each beat adds to it |
