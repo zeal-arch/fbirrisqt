@@ -5,7 +5,7 @@ import {
   Ruler, Activity as ActivityIcon, Wrench, Zap, type LucideIcon,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { HERO_BEATS, inr, pmItem, type RowStatus } from '../../data/botShowcase';
+import { HERO_BEATS, inr, type RowStatus } from '../../data/botShowcase';
 import { STATUS, statusOfFeed } from './status';
 import PmApprove from './PmApprove';
 
@@ -65,29 +65,6 @@ export function buildFeed(reached: (i: number) => boolean): FeedItem[] {
     }
   });
   return items;
-}
-
-/* What flies from the chat into the list when the bot decides. */
-export function chipFor(i: number): { label: string; tone: FeedTone } | null {
-  const b = HERO_BEATS[i];
-  const amount = (id: string) => {
-    for (const x of HERO_BEATS) for (const o of x.ops) if (o.type === 'row' && o.id === id) return o.amount;
-    return 0;
-  };
-  const find = <T extends (typeof b.ops)[number]['type']>(t: T) => b.ops.find(o => o.type === t) as Extract<(typeof b.ops)[number], { type: T }> | undefined;
-  const blocked = find('blocked');
-  if (blocked) return { label: `Duplicate · ${inr(blocked.amount)}`, tone: 'blocked' };
-  const row = find('row');
-  if (row) return { label: `${inr(row.amount)} · ${row.vendor}`, tone: SIGNAL[row.status][1] };
-  const status = find('status');
-  if (status) return { label: `Bill matched · ${inr(amount(status.id))}`, tone: 'posted' };
-  const approve = find('approve');
-  if (approve) return { label: `Approved · ${inr(pmItem(approve.id)?.amount ?? 0)}`, tone: 'posted' };
-  const pm = find('pm');
-  if (pm) return { label: pm.amount !== null ? `${pm.title} · ${inr(pm.amount)}` : pm.title, tone: 'pm' };
-  const progress = find('progress');
-  if (progress) return { label: progress.text, tone: 'progress' };
-  return null;
 }
 
 const TONE_ICON: Record<FeedTone, LucideIcon> = {

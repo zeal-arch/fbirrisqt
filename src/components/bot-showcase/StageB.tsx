@@ -1,12 +1,11 @@
-import { useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useMemo, useRef, type KeyboardEvent } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react';
 import { AlertCircle, Ban, Check, CheckCircle2, Clock3, HelpCircle, MessageSquareText, Mic, Receipt, type LucideIcon } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { HERO_BEATS, PEOPLE, booksFrom, inr, nextApproval, pmItem, type Beat, type BookOp, type Tone } from '../../data/botShowcase';
 import { usePresenter } from '../../hooks/usePresenter';
 import Phone from './Phone';
-import Backdrop, { calmAt } from './Backdrop';
-import FlowLines from './FlowLines';
+import Backdrop from './Backdrop';
 import BotMark from './BotMark';
 import { AnimatedNumber } from './BooksFeed';
 import { BillPhoto, WaveBars, to12 } from './ChatParts';
@@ -15,26 +14,19 @@ import PmApprove from './PmApprove';
 import { LIVE_DOT, STATUS, statusOfDecision } from './status';
 
 /* Design B: the phone at the centre. On the left, what comes in from the site (a bill photo, a voice note,
-   a text); on the right, what Site Bot files in the firstbriq CRM. Lines run from the incoming cards into the
-   phone and out of the phone into the CRM, with a pulse each time something moves. Same scripted day as A. */
+   a text); on the right, what Site Bot files in the firstbriq CRM. Same scripted day as A. */
 
 const SHAPES = HERO_BEATS.map(b => ({ hasMessage: b.message !== null, checks: b.checks.length, hasReply: Boolean(b.reply) }));
 const ease = [0.22, 1, 0.36, 1] as const;
 const cardShadow = 'shadow-[0_18px_34px_-22px_rgba(40,25,10,0.45)]';
 
 type Presenter = ReturnType<typeof usePresenter>;
-interface Line { x0: number; y0a: number; y0b: number; x1: number; y1: number; h: number }
 
 export default function StageB() {
   const reducedMotion = Boolean(useReducedMotion());
   const rootRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
-  const phoneRef = useRef<HTMLDivElement>(null);
-  const inRef = useRef<HTMLDivElement>(null);
-  const outRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rootRef, { amount: 0.1 });
   const p = usePresenter(SHAPES, { active: inView, reducedMotion });
-  const beat = HERO_BEATS[p.index];
 
   /* newest first, three at most */
   const incoming = HERO_BEATS.map((b, i) => ({ b, i })).filter(({ b, i }) => b.message && p.reached(i, 'typing')).slice(-3).reverse();
@@ -46,42 +38,18 @@ export default function StageB() {
   /* once the bot has asked the PM, his cursor clicks Approve on that card before the next beat posts it */
   const approving = p.reached(p.index, 'replied') ? nextApproval(p.index) : null;
 
-  /* Lines from the incoming cards into the phone and from the phone into the CRM, measured from the real
-     layout. Only when all three sit in one row (wide screens). */
-  const [geo, setGeo] = useState<{ left: Line; right: Line } | null>(null);
-  useLayoutEffect(() => {
-    const measure = () => {
-      const f = frameRef.current?.getBoundingClientRect();
-      const ph = phoneRef.current?.getBoundingClientRect();
-      const a = inRef.current?.getBoundingClientRect();
-      const b = outRef.current?.getBoundingClientRect();
-      if (!f || !ph || !a || !b || a.width === 0 || a.right > ph.left || b.left < ph.right) { setGeo(null); return; }
-      const cy = ph.top + ph.height / 2 - f.top;
-      setGeo({
-        left: { x0: a.right + 6 - f.left, y0a: a.top + 60 - f.top, y0b: a.bottom - 60 - f.top, x1: ph.left + 4 - f.left, y1: cy, h: f.height },
-        right: { x0: b.left - 6 - f.left, y0a: b.top + 60 - f.top, y0b: b.bottom - 60 - f.top, x1: ph.right - 4 - f.left, y1: cy, h: f.height },
-      });
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (frameRef.current) ro.observe(frameRef.current);
-    return () => ro.disconnect();
-  }, [p.index, p.phase]);
-
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'ArrowRight') { e.preventDefault(); p.step(); }
   };
 
   return (
     <div ref={rootRef} onKeyDown={onKey} role="region" aria-label="Example: Site Bot reading one day in a site WhatsApp group" className="text-left">
-      <div ref={frameRef} className="relative overflow-hidden rounded-[22px] ring-1 ring-black/[0.04]">
-        <Backdrop grainMask={calmAt('50%', '50%')} spotLeft="50%" />
-        {geo && <FlowLines {...geo.left} pulseKey={beat.message && p.reached(p.index, 'typing') ? p.index : null} lane={p.index} />}
-        {geo && <FlowLines {...geo.right} outward pulseKey={p.reached(p.index, 'decided') ? p.index : null} lane={p.index + 1} />}
+      <div className="relative overflow-hidden rounded-[22px] ring-1 ring-black/[0.05]">
+        <Backdrop />
 
         <div className="relative flex flex-col items-center gap-8 px-4 py-10 lg:flex-row lg:justify-center lg:gap-14 lg:px-8 xl:h-[760px] xl:gap-[92px] xl:py-0">
           {/* in: from the site (wide screens only) */}
-          <div ref={inRef} className="relative z-10 hidden h-[560px] w-[300px] shrink-0 flex-col xl:flex">
+          <div className="relative z-10 hidden h-[560px] w-[300px] shrink-0 flex-col xl:flex">
             <ColumnLabel>From the site group</ColumnLabel>
             <div className="flex flex-col gap-3 [mask-image:linear-gradient(to_bottom,#000_82%,transparent)]">
               <AnimatePresence initial={false} mode="popLayout">
@@ -97,7 +65,6 @@ export default function StageB() {
           {/* the phone */}
           <div className="relative z-20 shrink-0" style={{ perspective: 1400 }}>
             <motion.div
-              ref={phoneRef}
               initial={{ opacity: 0, y: 70, rotateX: 16 }}
               whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
               viewport={{ once: true }}
@@ -108,7 +75,7 @@ export default function StageB() {
           </div>
 
           {/* out: into the firstbriq CRM */}
-          <div ref={outRef} className="relative z-10 flex h-[560px] w-full max-w-[340px] shrink-0 flex-col lg:w-[300px]">
+          <div className="relative z-10 flex h-[560px] w-full max-w-[340px] shrink-0 flex-col lg:w-[300px]">
             <ColumnLabel>Into firstbriq CRM</ColumnLabel>
             <CrmTotals posted={posted} waiting={books.pm.length} bills={bills} />
             <div className="mt-3 flex flex-col gap-3 [mask-image:linear-gradient(to_bottom,#000_82%,transparent)]">

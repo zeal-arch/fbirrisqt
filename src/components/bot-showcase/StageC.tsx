@@ -66,8 +66,7 @@ export default function StageC() {
     <div role="region" aria-label="Example: Site Bot reading one day in a site WhatsApp group, step by step" className="relative text-left">
       {/* the backdrop is clipped on its own layer: an overflow-hidden parent would stop the stage from pinning */}
       <div className="absolute inset-0 overflow-hidden rounded-[22px] ring-1 ring-black/[0.04]">
-        {/* the pinned stage moves down the whole story, so the grain calms in a vertical band where it sits */}
-        <Backdrop grainMask="linear-gradient(to right, #000 0%, rgba(0,0,0,0.3) 38%, rgba(0,0,0,0.12) 62%, rgba(0,0,0,0.3) 86%, #000 100%)" spotLeft={null} />
+        <Backdrop />
       </div>
 
       <div className="relative grid px-4 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-10 lg:px-10">
