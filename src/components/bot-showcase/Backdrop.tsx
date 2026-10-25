@@ -32,6 +32,10 @@ function paint(): string {
   return c.toDataURL();
 }
 
+/* A fine, static film grain laid over the haze (an SVG noise tile, so nothing is computed at runtime). */
+const GRAIN =
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='2.4' intercept='-0.7'/><feFuncG type='linear' slope='2.4' intercept='-0.7'/><feFuncB type='linear' slope='2.4' intercept='-0.7'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
+
 export default function Backdrop() {
   const [src] = useState(paint);
   const layer = { backgroundImage: `url(${src})`, backgroundSize: '100% 100%' };
@@ -39,6 +43,7 @@ export default function Backdrop() {
     <div className="absolute inset-0 overflow-hidden bg-[#c6cfe9]" aria-hidden="true">
       <div className="absolute inset-0 [image-rendering:pixelated]" style={layer} />
       <div className="absolute -inset-10 opacity-60 blur-[28px]" style={layer} />
+      <div className="absolute inset-0 opacity-[0.4] mix-blend-overlay" style={{ backgroundImage: GRAIN, backgroundSize: '240px 240px' }} />
     </div>
   );
 }
