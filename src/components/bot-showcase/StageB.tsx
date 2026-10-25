@@ -47,7 +47,9 @@ export default function StageB() {
       <div className="relative overflow-hidden rounded-[22px] ring-1 ring-black/[0.05]">
         <Backdrop />
 
-        <div className="relative flex flex-col items-center gap-8 px-4 py-10 lg:flex-row lg:justify-center lg:gap-14 lg:px-8 xl:h-[760px] xl:gap-[92px] xl:py-0">
+        <Script p={p} />
+
+        <div className="relative flex flex-col items-center gap-8 px-4 pb-12 pt-6 lg:flex-row lg:justify-center lg:gap-14 lg:px-8 xl:gap-[92px] xl:pb-14">
           {/* in: from the site (wide screens only) */}
           <div className="relative z-10 hidden h-[560px] w-[300px] shrink-0 flex-col xl:flex">
             <ColumnLabel>From the site group</ColumnLabel>
@@ -97,7 +99,37 @@ export default function StageB() {
 }
 
 function ColumnLabel({ children }: { children: string }) {
-  return <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.06em] text-black/45">{children}</p>;
+  return <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.06em] text-black/60">{children}</p>;
+}
+
+/* The script over the phone: what is happening right now, word by word, then what Site Bot did about it. */
+function Script({ p }: { p: Presenter }) {
+  const beat = HERO_BEATS[p.index];
+  const decided = p.reached(p.index, 'decided');
+  const words = beat.caption.split(' ');
+  return (
+    <div className="relative mx-auto flex min-h-[124px] max-w-[720px] flex-col items-center justify-end px-4 pt-10 text-center" aria-live="polite">
+      <AnimatePresence mode="wait">
+        <motion.div key={p.index} initial={{ opacity: 1 }} exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }} transition={{ duration: 0.3 }}>
+          <p className="text-[13px] font-medium tabular-nums text-black/55">{to12(beat.time)}</p>
+          <p className="mt-1 font-display text-[26px] font-normal leading-[1.15] tracking-[-0.03em] text-black md:text-[32px]">
+            {words.map((w, i) => (
+              <motion.span key={i} initial={{ opacity: 0, filter: 'blur(6px)' }} animate={{ opacity: 1, filter: 'blur(0px)' }} transition={{ delay: i * 0.06, duration: 0.35 }}>
+                {w}{' '}
+              </motion.span>
+            ))}
+          </p>
+          <p className="mt-2 h-5 text-[14px] text-black/60">
+            {decided && (
+              <motion.span initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-1.5">
+                <BotMark size={16} /> Site Bot: <span className="font-medium text-black/85">{beat.decision.label}</span>
+              </motion.span>
+            )}
+          </p>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
 }
 
 /* ---------- in: one message from the site ---------- */
