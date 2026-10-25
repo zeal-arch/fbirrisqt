@@ -3,6 +3,8 @@ import { ArrowUpRight } from 'lucide-react';
 import { FirstbriqLogo } from '../ui/FirstbriqLogo';
 import { VOLUNTEER_MAILTO } from '../../data/botShowcase';
 import Stage from './Stage';
+import StageA from './StageA';
+import StageC from './StageC';
 
 /* Section 1, the hero: a two-line headline, the description and buttons on one row, then the product playing a
    site day. */
@@ -13,7 +15,9 @@ const fadeUp = (delay = 0) => ({
   transition: { duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] as const },
 });
 
-export default function Hero() {
+/* design: 'b' (default) = phone at the centre with the script; 'a' = phone and CRM side by side;
+   'c' = a scroll story with the phone and CRM pinned */
+export default function Hero({ design = 'b' }: { design?: 'a' | 'b' | 'c' }) {
   return (
     <section className="min-h-screen bg-[#fdfcfc] font-display text-black">
       <header className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
@@ -55,7 +59,7 @@ export default function Hero() {
         </div>
 
         <motion.div id="stage" {...fadeUp(0.32)} className="mt-16 scroll-mt-6">
-          <Stage />
+          {design === 'a' ? <StageA /> : design === 'c' ? <StageC /> : <Stage />}
         </motion.div>
       </div>
     </section>

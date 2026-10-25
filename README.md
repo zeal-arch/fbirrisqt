@@ -22,6 +22,7 @@ npm run build    # static site in dist/
 | `src/pages/BotShowcase.tsx` | The page |
 | `src/components/bot-showcase/Hero.tsx` | Header, headline, call to action |
 | `src/components/bot-showcase/Stage.tsx` | The hero stage: a script line over an iPhone with the site's WhatsApp group, and what Site Bot files in the firstbriq CRM beside it |
+| `src/components/bot-showcase/StageA.tsx`, `StageC.tsx`, `CrmWindow.tsx`, `BotCard.tsx`, `BooksFeed.tsx` | Alternative stages kept for comparison: A (phone and full CRM side by side, `?design=a`) and C (scroll story, `?design=c`) |
 | `src/components/bot-showcase/Sections.tsx` | Sections 2–5: what it reads, money safety, nothing changes for your team, and the pilot call to action |
 | `src/components/bot-showcase/Controls.tsx` | Play / Step / Restart under the stage |
 | `src/components/bot-showcase/AnimatedNumber.tsx` | Numbers that count up instead of jumping |

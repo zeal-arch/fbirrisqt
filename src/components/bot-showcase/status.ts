@@ -1,4 +1,5 @@
 import type { Tone } from '../../data/botShowcase';
+import type { FeedTone } from './BooksFeed';
 
 /* One set of status colours for the whole page:
    green = posted, grey = waiting or handled, orange = needs the PM (the only "look here" colour),
@@ -17,4 +18,7 @@ export const STATUS: Record<Status, { text: string; pill: string; dot: string; r
 export const LIVE_DOT = 'bg-[#2f9e5b]';
 
 export const statusOfDecision = (t: Tone): Status =>
+  t === 'posted' ? 'posted' : t === 'pm' ? 'pm' : t === 'blocked' ? 'duplicate' : 'neutral';
+
+export const statusOfFeed = (t: FeedTone): Status =>
   t === 'posted' ? 'posted' : t === 'pm' ? 'pm' : t === 'blocked' ? 'duplicate' : 'neutral';
