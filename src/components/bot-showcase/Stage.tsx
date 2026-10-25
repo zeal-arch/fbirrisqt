@@ -6,7 +6,8 @@ import { HERO_BEATS, booksFrom } from '../../data/botShowcase';
 import { usePresenter } from '../../hooks/usePresenter';
 import Phone from './Phone';
 import CrmWindow from './CrmWindow';
-import { buildFeed, chipFor, type FeedTone } from './BooksFeed';
+import { buildFeed, chipFor } from './BooksFeed';
+import { STATUS, statusOfFeed } from './status';
 import Backdrop from './Backdrop';
 import FlowLines from './FlowLines';
 import { PeekerHands, PeekerHead, type Mood } from './Peeker';
@@ -28,10 +29,6 @@ interface Geo {
   /* lines from the phone's right edge fanning out across the CRM's left edge */
   flowRight: { x0: number; y0a: number; y0b: number; x1: number; y1: number; h: number };
 }
-
-const CHIP_DOT: Record<FeedTone, string> = {
-  posted: 'bg-black/35', wait: 'bg-black/20', pm: 'bg-primary', blocked: 'bg-primary', progress: 'bg-black/35',
-};
 
 export default function Stage() {
   const reducedMotion = Boolean(useReducedMotion());
@@ -159,7 +156,7 @@ export default function Stage() {
               transition={{ duration: 0.8, ease: 'easeInOut', times: [0, 0.5, 1], opacity: { duration: 0.8, times: [0, 0.15, 0.85, 1] }, scale: { duration: 0.8, times: [0, 0.4, 0.85, 1] } }}
               style={{ translateX: '-50%', translateY: '-50%' }}
             >
-              <span className={cn('h-1.5 w-1.5 rounded-full', CHIP_DOT[chip.tone])} />
+              <span className={cn('h-1.5 w-1.5 rounded-full', STATUS[statusOfFeed(chip.tone)].dot)} />
               {chip.label}
             </motion.div>
           )}

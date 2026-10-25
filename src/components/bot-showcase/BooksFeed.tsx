@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { HERO_BEATS, inr, type RowStatus } from '../../data/botShowcase';
+import { STATUS, statusOfFeed } from './status';
 
 /* Amplemarket-style live list: "Recently added", newest on top, each row with a small logo tile on the left
    and a short signal with an icon on the right. Rows come from what the bot did, beat by beat. */
@@ -80,12 +81,12 @@ export function chipFor(i: number): { label: string; tone: FeedTone } | null {
   return null;
 }
 
-const TONE_ICON: Record<FeedTone, { icon: LucideIcon; cls: string }> = {
-  posted: { icon: CheckCircle2, cls: 'text-black/45' },
-  wait: { icon: Clock3, cls: 'text-black/30' },
-  pm: { icon: AlertCircle, cls: 'text-primary' },
-  blocked: { icon: Ban, cls: 'text-primary' },
-  progress: { icon: ActivityIcon, cls: 'text-black/45' },
+const TONE_ICON: Record<FeedTone, LucideIcon> = {
+  posted: CheckCircle2,
+  wait: Clock3,
+  pm: AlertCircle,
+  blocked: Ban,
+  progress: ActivityIcon,
 };
 
 const LOGO: Record<string, { icon: LucideIcon; tint: string }> = {
@@ -133,7 +134,8 @@ const BooksFeed = forwardRef<HTMLUListElement, Props>(function BooksFeed({ items
           {items.map(it => {
             const fresh = it.at === current && landing;
             const logo = LOGO[it.key] ?? { icon: Layers, tint: '#eee' };
-            const tone = TONE_ICON[it.tone];
+            const Icon = TONE_ICON[it.tone];
+            const st = STATUS[statusOfFeed(it.tone)];
             return (
               <motion.li
                 key={it.key}
@@ -142,10 +144,10 @@ const BooksFeed = forwardRef<HTMLUListElement, Props>(function BooksFeed({ items
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], layout: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }}
-                className={cn('relative flex items-center gap-2.5 border-b border-black/[0.05] px-3.5 py-[9px] transition-colors duration-700', fresh ? 'bg-[#fdf1ea]' : 'bg-white')}
+                className={cn('relative flex items-center gap-2.5 border-b border-black/[0.05] px-3.5 py-[9px] transition-colors duration-700', fresh ? st.row : 'bg-white')}
               >
-                {/* the row the bot just wrote lights up in firstbriq orange while its reply shows in the chat */}
-                <span className={cn('absolute inset-y-0 left-0 w-[3px] bg-primary transition-opacity duration-700', fresh ? 'opacity-100' : 'opacity-0')} aria-hidden="true" />
+                {/* the row the bot just wrote lights up in its status colour while its reply shows in the chat */}
+                <span className={cn('absolute inset-y-0 left-0 w-[3px] transition-opacity duration-700', st.dot, fresh ? 'opacity-100' : 'opacity-0')} aria-hidden="true" />
                 <span className="h-3.5 w-3.5 shrink-0 rounded-[4px] border border-black/10" aria-hidden="true" />
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg ring-1 ring-black/[0.04]" style={{ background: logo.tint }} aria-hidden="true">
                   <logo.icon className="h-4 w-4 text-black/70" strokeWidth={1.8} />
@@ -156,9 +158,9 @@ const BooksFeed = forwardRef<HTMLUListElement, Props>(function BooksFeed({ items
                 </span>
                 <span className="flex shrink-0 flex-col items-end gap-0.5">
                   {it.amount !== undefined && <span className={cn('text-[13px] font-medium tabular-nums', it.tone === 'blocked' ? 'text-black/35 line-through' : 'text-black/85')}>{inr(it.amount)}</span>}
-                  <motion.span key={it.signal} initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-1 text-[11px] text-black/55">
+                  <motion.span key={it.signal} initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }} className={cn('flex items-center gap-1 text-[11px]', st.text)}>
                     <span className="hidden max-w-[150px] truncate sm:inline">{it.signal}</span>
-                    <tone.icon className={cn('h-3.5 w-3.5', tone.cls)} />
+                    <Icon className="h-3.5 w-3.5" />
                   </motion.span>
                 </span>
               </motion.li>

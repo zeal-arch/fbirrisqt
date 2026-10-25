@@ -5,12 +5,13 @@ import { cn } from '../../lib/utils';
 import { HERO_BEATS, PEOPLE, booksFrom, inr, type Beat, type BookOp, type Tone } from '../../data/botShowcase';
 import { usePresenter } from '../../hooks/usePresenter';
 import Phone from './Phone';
-import Backdrop from './Backdrop';
+import Backdrop, { calmAt } from './Backdrop';
 import FlowLines from './FlowLines';
 import BotMark from './BotMark';
 import { AnimatedNumber } from './BooksFeed';
 import { BillPhoto, WaveBars, to12 } from './ChatParts';
 import { Controls } from './Stage';
+import { LIVE_DOT, STATUS, statusOfDecision } from './status';
 
 /* Design B: the phone at the centre. On the left, what comes in from the site (a bill photo, a voice note,
    a text); on the right, what Site Bot files in the firstbriq CRM. Lines run from the incoming cards into the
@@ -71,7 +72,7 @@ export default function StageB() {
   return (
     <div ref={rootRef} onKeyDown={onKey} role="region" aria-label="Example: Site Bot reading one day in a site WhatsApp group" className="text-left">
       <div ref={frameRef} className="relative overflow-hidden rounded-[22px] ring-1 ring-black/[0.04]">
-        <Backdrop />
+        <Backdrop grainMask={calmAt('50%', '50%')} spotLeft="50%" />
         {geo && <FlowLines {...geo.left} pulseKey={beat.message && p.reached(p.index, 'typing') ? p.index : null} lane={p.index} />}
         {geo && <FlowLines {...geo.right} outward pulseKey={p.reached(p.index, 'decided') ? p.index : null} lane={p.index + 1} />}
 
@@ -189,13 +190,13 @@ function InCard({ beat, current }: { beat: Beat; current: boolean }) {
 
 /* ---------- out: what the bot filed ---------- */
 
-const TONE: Record<Tone, { icon: LucideIcon; cls: string }> = {
-  posted: { icon: CheckCircle2, cls: 'bg-[#eef6f0] text-[#2f6b45]' },
-  claimed: { icon: Clock3, cls: 'bg-black/[0.05] text-black/60' },
-  pm: { icon: AlertCircle, cls: 'bg-[#fdf1ea] text-[#b8350f]' },
-  ask: { icon: HelpCircle, cls: 'bg-[#eef3fa] text-[#2f5d8a]' },
-  blocked: { icon: Ban, cls: 'bg-[#fdf1ea] text-[#b8350f]' },
-  summary: { icon: CheckCircle2, cls: 'bg-white/10 text-white' },
+const TONE_ICON: Record<Tone, LucideIcon> = {
+  posted: CheckCircle2,
+  claimed: Clock3,
+  pm: AlertCircle,
+  ask: HelpCircle,
+  blocked: Ban,
+  summary: CheckCircle2,
 };
 
 function opOf<T extends BookOp['type']>(b: Beat, t: T) {
@@ -225,8 +226,9 @@ function OutCard({ beat, i, p, current }: { beat: Beat; i: number; p: Presenter;
   const decided = p.reached(i, 'decided');
   const shown = p.checksShown(i);
   const entry = entryOf(beat);
-  const tone = TONE[beat.decision.tone];
-  const flagged = decided && ['pm', 'blocked'].includes(beat.decision.tone);
+  const Icon = TONE_ICON[beat.decision.tone];
+  const outcome = statusOfDecision(beat.decision.tone);
+  const flagged = decided && outcome === 'pm';
   return (
     <div className={cn('rounded-2xl bg-white p-3 ring-1 transition-shadow duration-500', cardShadow, current && flagged ? 'ring-primary/30' : current ? 'ring-black/15' : 'ring-black/[0.06]')}>
       <div className="flex items-start justify-between gap-3">
@@ -245,8 +247,8 @@ function OutCard({ beat, i, p, current }: { beat: Beat; i: number; p: Presenter;
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.4, ease }} className="overflow-hidden">
             <ul className="mt-2.5 space-y-1 border-t border-black/[0.06] pt-2.5">
               {beat.checks.slice(0, shown).map(c => (
-                <motion.li key={c.text} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className={cn('flex items-center gap-1.5 text-[11.5px]', c.ok ? 'text-black/65' : 'font-medium text-[#b8350f]')}>
-                  {c.ok ? <Check className="h-3 w-3 shrink-0 text-[#2f6b45]" strokeWidth={2.6} /> : <AlertCircle className="h-3 w-3 shrink-0" />}
+                <motion.li key={c.text} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className={cn('flex items-center gap-1.5 text-[11.5px]', c.ok ? 'text-black/65' : cn('font-medium', outcome === 'pm' ? STATUS.pm.text : 'text-black/80'))}>
+                  {c.ok ? <Check className={cn('h-3 w-3 shrink-0', STATUS.posted.text)} strokeWidth={2.6} /> : <AlertCircle className="h-3 w-3 shrink-0" />}
                   {c.text}
                 </motion.li>
               ))}
@@ -257,8 +259,8 @@ function OutCard({ beat, i, p, current }: { beat: Beat; i: number; p: Presenter;
 
       <div className="mt-2.5 flex h-[22px] items-center justify-between gap-2">
         {decided ? (
-          <motion.span initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className={cn('inline-flex h-[22px] min-w-0 items-center gap-1 rounded-full px-2 text-[11px] font-medium', tone.cls)}>
-            <tone.icon className="h-3 w-3 shrink-0" />
+          <motion.span initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className={cn('inline-flex h-[22px] min-w-0 items-center gap-1 rounded-full px-2 text-[11px] font-medium', STATUS[outcome].pill)}>
+            <Icon className="h-3 w-3 shrink-0" />
             <span className="truncate">{beat.decision.label}</span>
           </motion.span>
         ) : (
@@ -288,7 +290,7 @@ function CrmTotals({ posted, waiting, bills }: { posted: number; waiting: number
       <div className="flex items-center justify-between border-b border-black/[0.06] px-3 py-2 text-[11.5px]">
         <span className="font-medium text-black/80">HSR 3BHK · Mrs. Rao</span>
         <span className="flex items-center gap-1.5 text-black/50">
-          <span className="relative flex h-1.5 w-1.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-50" /><span className="relative h-1.5 w-1.5 rounded-full bg-primary" /></span>
+          <span className="relative flex h-1.5 w-1.5"><span className={cn('absolute inline-flex h-full w-full animate-ping rounded-full opacity-50', LIVE_DOT)} /><span className={cn('relative h-1.5 w-1.5 rounded-full', LIVE_DOT)} /></span>
           Live
         </span>
       </div>

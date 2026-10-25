@@ -2,12 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { AlertCircle, Check } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { HERO_BEATS, booksFrom } from '../../data/botShowcase';
+import { HERO_BEATS, booksFrom, type Tone } from '../../data/botShowcase';
 import type { usePresenter } from '../../hooks/usePresenter';
 import Phone from './Phone';
 import CrmWindow from './CrmWindow';
 import Backdrop from './Backdrop';
 import { buildFeed } from './BooksFeed';
+import { STATUS, statusOfDecision } from './status';
 
 /* Design C: a scroll story. The phone and the CRM stay pinned while the visitor scrolls; each scroll step is one
    moment of the day, with a short line saying what Site Bot did and what it checked. The visitor sets the pace,
@@ -15,6 +16,12 @@ import { buildFeed } from './BooksFeed';
 
 type Presenter = ReturnType<typeof usePresenter>;
 const noop = () => {};
+
+/* the decision in its status colour: green when posted, orange when it needs the PM, otherwise plain */
+const outcomeText = (t: Tone) => {
+  const s = statusOfDecision(t);
+  return s === 'posted' || s === 'pm' ? STATUS[s].text : 'text-black/85';
+};
 
 /* Phone and CrmWindow read the day through a presenter; here it simply stands at the end of the step in view. */
 function presenterAt(step: number): Presenter {
@@ -58,7 +65,10 @@ export default function StageC() {
   return (
     <div role="region" aria-label="Example: Site Bot reading one day in a site WhatsApp group, step by step" className="relative text-left">
       {/* the backdrop is clipped on its own layer: an overflow-hidden parent would stop the stage from pinning */}
-      <div className="absolute inset-0 overflow-hidden rounded-[22px] ring-1 ring-black/[0.04]"><Backdrop /></div>
+      <div className="absolute inset-0 overflow-hidden rounded-[22px] ring-1 ring-black/[0.04]">
+        {/* the pinned stage moves down the whole story, so the grain calms in a vertical band where it sits */}
+        <Backdrop grainMask="linear-gradient(to right, #000 0%, rgba(0,0,0,0.3) 38%, rgba(0,0,0,0.12) 62%, rgba(0,0,0,0.3) 86%, #000 100%)" spotLeft={null} />
+      </div>
 
       <div className="relative grid px-4 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-10 lg:px-10">
         {/* left: one short story per moment of the day */}
@@ -79,13 +89,13 @@ export default function StageC() {
                 <span className="inline-flex h-[26px] items-center rounded-full bg-black px-2.5 text-[12px] font-medium tabular-nums text-white">{b.time}</span>
                 <h3 className="mt-4 font-display text-[28px] font-normal leading-[1.1] tracking-[-0.035em] text-black lg:text-[34px]">{b.caption}</h3>
                 <p className="mt-3 font-display text-[16px] leading-[1.4] tracking-[-0.01em] text-black/60 lg:text-[17px]">
-                  Site Bot: <span className="text-black/85">{b.decision.label}</span>
+                  Site Bot: <span className={cn('font-medium', outcomeText(b.decision.tone))}>{b.decision.label}</span>
                 </p>
                 {b.checks.length > 0 && (
                   <ul className="mt-4 space-y-1.5 border-t border-black/10 pt-4">
                     {b.checks.map(c => (
-                      <li key={c.text} className={cn('flex items-center gap-2 font-display text-[13.5px]', c.ok ? 'text-black/70' : 'font-medium text-[#b8350f]')}>
-                        {c.ok ? <Check className="h-3.5 w-3.5 shrink-0 text-[#2f6b45]" strokeWidth={2.6} /> : <AlertCircle className="h-3.5 w-3.5 shrink-0" />}
+                      <li key={c.text} className={cn('flex items-center gap-2 font-display text-[13.5px]', c.ok ? 'text-black/70' : cn('font-medium', statusOfDecision(b.decision.tone) === 'pm' ? STATUS.pm.text : 'text-black/85'))}>
+                        {c.ok ? <Check className={cn('h-3.5 w-3.5 shrink-0', STATUS.posted.text)} strokeWidth={2.6} /> : <AlertCircle className="h-3.5 w-3.5 shrink-0" />}
                         {c.text}
                       </li>
                     ))}

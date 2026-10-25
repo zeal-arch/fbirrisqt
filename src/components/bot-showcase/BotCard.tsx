@@ -5,6 +5,7 @@ import { cn } from '../../lib/utils';
 import { HERO_BEATS, PEOPLE } from '../../data/botShowcase';
 import type { usePresenter } from '../../hooks/usePresenter';
 import BotMark from './BotMark';
+import { STATUS, statusOfDecision } from './status';
 
 /* Summation-style agent panel: the message the bot is reading, a collapsible "Ran 3 checks" list,
    then what it decided. Shows only the current beat, so it stays calm. */
@@ -19,6 +20,7 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
   const decided = p.reached(p.index, 'decided');
   const replied = p.reached(p.index, 'replied');
   const status = p.phase === 'typing' ? 'Listening' : p.phase === 'message' ? 'Reading' : p.phase === 'checks' ? 'Checking' : 'Done';
+  const outcome = statusOfDecision(beat.decision.tone);
 
   return (
     <div ref={ref} className={cn('p-4', !bare && 'rounded-2xl bg-white/95 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_30px_60px_-30px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.06] backdrop-blur', className)}>
@@ -26,7 +28,7 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
         <BotMark size={24} />
         <span className="text-[13px] font-semibold">Site Bot</span>
         <span className="ml-auto flex items-center gap-1.5 rounded-full bg-black/[0.04] px-2 py-0.5 text-[11px] text-black/55">
-          <span className={cn('h-1.5 w-1.5 rounded-full', status === 'Done' ? 'bg-black/35' : status === 'Listening' ? 'bg-black/20' : 'animate-pulse bg-primary')} />
+          <span className={cn('h-1.5 w-1.5 rounded-full', status === 'Done' ? 'bg-black/35' : status === 'Listening' ? 'bg-black/20' : 'animate-pulse bg-black/55')} />
           {status}
         </span>
       </div>
@@ -62,7 +64,8 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
                   <ul className="mt-1.5 flex flex-col gap-1 pl-1">
                     {beat.checks.slice(0, checks).map(c => (
                       <motion.li key={c.text} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className="flex items-start gap-2 text-[12.5px] leading-snug text-black/75">
-                        {c.ok ? <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-black/45" /> : <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />}
+                        {/* the check that changed the decision is orange only when it sends the item to the PM */}
+                        {c.ok ? <Check className={cn('mt-0.5 h-3.5 w-3.5 shrink-0', STATUS.posted.text)} /> : <X className={cn('mt-0.5 h-3.5 w-3.5 shrink-0', outcome === 'pm' ? STATUS.pm.text : 'text-black/55')} />}
                         {c.text}
                       </motion.li>
                     ))}
@@ -71,7 +74,7 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
               )}
 
               {decided && (
-                <motion.p initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="mt-3 flex items-center gap-1.5 border-t border-black/[0.06] pt-3 text-[13px] font-semibold text-black">
+                <motion.p initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className={cn('mt-3 flex items-center gap-1.5 border-t border-black/[0.06] pt-3 text-[13px] font-semibold', outcome === 'posted' || outcome === 'pm' ? STATUS[outcome].text : 'text-black')}>
                   <ArrowRight className="h-3.5 w-3.5" /> {beat.decision.label}
                 </motion.p>
               )}

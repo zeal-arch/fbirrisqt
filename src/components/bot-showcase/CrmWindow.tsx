@@ -4,6 +4,7 @@ import { cn } from '../../lib/utils';
 import { inr } from '../../data/botShowcase';
 import type { usePresenter } from '../../hooks/usePresenter';
 import BotCard from './BotCard';
+import { LIVE_DOT } from './status';
 import BotMark from './BotMark';
 import BooksFeed, { AnimatedNumber, type FeedItem } from './BooksFeed';
 
@@ -33,7 +34,7 @@ const CrmWindow = forwardRef<HTMLUListElement, Props>(function CrmWindow({ p, fe
         </span>
         <span className="pointer-events-none absolute inset-x-0 text-center text-[11.5px] text-black/40">firstbriq CRM · Site Bot</span>
         <span className="ml-auto flex items-center gap-1.5 text-[11px] text-black/50">
-          <span className="relative flex h-1.5 w-1.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-50" /><span className="relative h-1.5 w-1.5 rounded-full bg-primary" /></span>
+          <span className="relative flex h-1.5 w-1.5"><span className={cn('absolute inline-flex h-full w-full animate-ping rounded-full opacity-50', LIVE_DOT)} /><span className={cn('relative h-1.5 w-1.5 rounded-full', LIVE_DOT)} /></span>
           Live
         </span>
       </div>
