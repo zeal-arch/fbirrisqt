@@ -23,8 +23,10 @@ npm run build    # static site in dist/
 | `src/pages/BotShowcase.tsx` | The page |
 | `src/components/bot-showcase/Hero.tsx` | Header, headline, call to action |
 | `src/components/bot-showcase/Stage.tsx` | The frame and layout, the callout line, the flying chip and the Play / Step / Restart controls |
-| `src/components/bot-showcase/StageB.tsx` | Design B: the phone at the centre, what comes in from site on the left, what the bot files in the CRM on the right. Open it with `?design=b` or the switch at the bottom of the page (the switch is for review; remove it before moving the page) |
+| `src/components/bot-showcase/StageB.tsx` | Design B: the phone at the centre, what comes in from site on the left, what the bot files in the CRM on the right. Open it with `?design=b` |
 | `src/components/bot-showcase/StageC.tsx` | Design C: a scroll story. The phone and CRM stay pinned while each scroll step shows one moment of the day. Open it with `?design=c` |
+| `src/components/bot-showcase/PmApprove.tsx` | The PM's cursor clicking Approve in the CRM, before an advance is posted |
+| `src/components/bot-showcase/status.ts` | The one set of status colours all three designs use |
 | `src/components/bot-showcase/BotCard.tsx` | The Site Bot panel inside the CRM: the message, "Ran N checks" and the decision |
 | `src/components/bot-showcase/CrmWindow.tsx` | The firstbriq CRM window: project bar, numbers, feed and the bot panel |
 | `src/components/bot-showcase/BooksFeed.tsx` | The live "Recently added" books list, and what each beat adds to it |

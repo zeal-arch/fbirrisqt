@@ -27,7 +27,7 @@ export default function Phone({ p, reducedMotion }: { p: Presenter; reducedMotio
   let last: string | null = 'suresh';
   HERO_BEATS.forEach((b, i) => {
     if (b.message && p.reached(i, 'message')) {
-      chat.push(<motion.div key={'m' + i} className="flex flex-col" {...enter}><MessageBubble message={b.message} time={b.time} first={last !== b.message.from} /></motion.div>);
+      chat.push(<motion.div key={'m' + i} className="flex flex-col" {...enter}><MessageBubble message={b.message} time={b.time} first={last !== b.message.from} live={i === p.index} /></motion.div>);
       last = b.message.from;
     }
     if (b.reply && !b.reply.private && p.reached(i, 'replied')) {

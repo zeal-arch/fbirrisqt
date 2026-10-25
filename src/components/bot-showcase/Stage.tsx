@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, typ
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react';
 import { Pause, Play, RotateCcw, SkipForward } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { HERO_BEATS, booksFrom } from '../../data/botShowcase';
+import { HERO_BEATS, booksFrom, nextApproval } from '../../data/botShowcase';
 import { usePresenter } from '../../hooks/usePresenter';
 import Phone from './Phone';
 import CrmWindow from './CrmWindow';
@@ -55,6 +55,8 @@ export default function Stage() {
   const bills = books.rows.filter(r => r.status === 'claimed').length;
   const landing = p.phase === 'decided' || p.phase === 'replied';
   const chip = p.phase === 'decided' ? chipFor(p.index) : null;
+  /* once the bot has asked the PM, his cursor clicks Approve before the next beat posts it */
+  const approving = p.reached(p.index, 'replied') ? nextApproval(p.index) : null;
   const mood: Mood = !p.reached(p.index, 'decided') ? 'neutral' : ['pm', 'blocked', 'ask'].includes(beat.decision.tone) ? 'alert' : 'happy';
 
   /* Positions for the flow lines and the flying chip, measured from the real layout (wide screens only). */
@@ -131,7 +133,7 @@ export default function Stage() {
                 <PeekerHead mood={mood} nodKey={mood === 'happy' && landed ? p.index : -1} />
               </div>
               <div className="relative z-10">
-                <CrmWindow ref={listRef} p={p} feed={feed} landing={landing} posted={posted} waiting={books.pm.length} blocked={books.blocked} bills={bills} />
+                <CrmWindow ref={listRef} p={p} feed={feed} landing={landing} posted={posted} waiting={books.pm.length} blocked={books.blocked} bills={bills} approving={approving} />
               </div>
               <div className="absolute -top-[9px] right-[38px] z-20 hidden xl:block">
                 <PeekerHands />

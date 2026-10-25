@@ -5,8 +5,9 @@ import {
   Ruler, Activity as ActivityIcon, Wrench, Zap, type LucideIcon,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { HERO_BEATS, inr, type RowStatus } from '../../data/botShowcase';
+import { HERO_BEATS, inr, pmItem, type RowStatus } from '../../data/botShowcase';
 import { STATUS, statusOfFeed } from './status';
+import PmApprove from './PmApprove';
 
 /* Amplemarket-style live list: "Recently added", newest on top, each row with a small logo tile on the left
    and a short signal with an icon on the right. Rows come from what the bot did, beat by beat. */
@@ -52,6 +53,12 @@ export function buildFeed(reached: (i: number) => boolean): FeedItem[] {
         if (!hasRow) items.unshift({ key: op.id, title: op.title, sub: op.detail, amount: op.amount ?? undefined, signal: 'Sent to PM', tone: 'pm', at: i });
       } else if (op.type === 'progress') {
         items.unshift({ key: op.id, title: op.text, sub: `${op.by} · voice note`, signal: 'Progress logged', tone: 'progress', at: i });
+      } else if (op.type === 'approve') {
+        const idx = items.findIndex(x => x.key === op.id);
+        if (idx >= 0) {
+          const [it] = items.splice(idx, 1);
+          items.unshift({ ...it, signal: 'Approved by Arjun', tone: 'posted', at: i });
+        }
       } else {
         items.unshift({ key: op.id, title: 'Raju Traders', sub: 'Same bill photo again', amount: op.amount, signal: 'Duplicate blocked', tone: 'blocked', at: i });
       }
@@ -74,6 +81,8 @@ export function chipFor(i: number): { label: string; tone: FeedTone } | null {
   if (row) return { label: `${inr(row.amount)} · ${row.vendor}`, tone: SIGNAL[row.status][1] };
   const status = find('status');
   if (status) return { label: `Bill matched · ${inr(amount(status.id))}`, tone: 'posted' };
+  const approve = find('approve');
+  if (approve) return { label: `Approved · ${inr(pmItem(approve.id)?.amount ?? 0)}`, tone: 'posted' };
   const pm = find('pm');
   if (pm) return { label: pm.amount !== null ? `${pm.title} · ${inr(pm.amount)}` : pm.title, tone: 'pm' };
   const progress = find('progress');
@@ -115,9 +124,10 @@ export function AnimatedNumber({ value, format }: { value: number; format: (n: n
   return <>{format(shown)}</>;
 }
 
-interface Props { items: FeedItem[]; current: number; landing: boolean; posted: number; waiting: number; bare?: boolean; className?: string }
+/* approving: the key of the item the PM is about to approve; that row shows his cursor clicking Approve */
+interface Props { items: FeedItem[]; current: number; landing: boolean; posted: number; waiting: number; approving?: string | null; bare?: boolean; className?: string }
 
-const BooksFeed = forwardRef<HTMLUListElement, Props>(function BooksFeed({ items, current, landing, posted, waiting, bare, className }, listRef) {
+const BooksFeed = forwardRef<HTMLUListElement, Props>(function BooksFeed({ items, current, landing, posted, waiting, approving, bare, className }, listRef) {
   return (
     <div className={cn('overflow-hidden bg-white', !bare && 'rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.04),0_30px_60px_-30px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.06]', className)}>
       <div className="flex items-center gap-2 border-b border-black/[0.06] px-3.5 py-2.5 text-[12.5px]">
@@ -158,10 +168,14 @@ const BooksFeed = forwardRef<HTMLUListElement, Props>(function BooksFeed({ items
                 </span>
                 <span className="flex shrink-0 flex-col items-end gap-0.5">
                   {it.amount !== undefined && <span className={cn('text-[13px] font-medium tabular-nums', it.tone === 'blocked' ? 'text-black/35 line-through' : 'text-black/85')}>{inr(it.amount)}</span>}
-                  <motion.span key={it.signal} initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }} className={cn('flex items-center gap-1 text-[11px]', st.text)}>
-                    <span className="hidden max-w-[150px] truncate sm:inline">{it.signal}</span>
-                    <Icon className="h-3.5 w-3.5" />
-                  </motion.span>
+                  {approving === it.key ? (
+                    <PmApprove />
+                  ) : (
+                    <motion.span key={it.signal} initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }} className={cn('flex items-center gap-1 text-[11px]', st.text)}>
+                      <span className="hidden max-w-[150px] truncate sm:inline">{it.signal}</span>
+                      <Icon className="h-3.5 w-3.5" />
+                    </motion.span>
+                  )}
                 </span>
               </motion.li>
             );

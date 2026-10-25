@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from '
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react';
 import { AlertCircle, Ban, Check, CheckCircle2, Clock3, HelpCircle, MessageSquareText, Mic, Receipt, type LucideIcon } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { HERO_BEATS, PEOPLE, booksFrom, inr, type Beat, type BookOp, type Tone } from '../../data/botShowcase';
+import { HERO_BEATS, PEOPLE, booksFrom, inr, nextApproval, pmItem, type Beat, type BookOp, type Tone } from '../../data/botShowcase';
 import { usePresenter } from '../../hooks/usePresenter';
 import Phone from './Phone';
 import Backdrop, { calmAt } from './Backdrop';
@@ -11,6 +11,7 @@ import BotMark from './BotMark';
 import { AnimatedNumber } from './BooksFeed';
 import { BillPhoto, WaveBars, to12 } from './ChatParts';
 import { Controls } from './Stage';
+import PmApprove from './PmApprove';
 import { LIVE_DOT, STATUS, statusOfDecision } from './status';
 
 /* Design B: the phone at the centre. On the left, what comes in from the site (a bill photo, a voice note,
@@ -42,6 +43,8 @@ export default function StageB() {
   const books = useMemo(() => booksFrom(HERO_BEATS.filter((_, i) => p.reached(i, 'decided'))), [p.reached]);
   const posted = books.rows.filter(r => r.status === 'posted').reduce((a, r) => a + r.amount, 0);
   const bills = books.rows.filter(r => r.status === 'claimed').length;
+  /* once the bot has asked the PM, his cursor clicks Approve on that card before the next beat posts it */
+  const approving = p.reached(p.index, 'replied') ? nextApproval(p.index) : null;
 
   /* Lines from the incoming cards into the phone and from the phone into the CRM, measured from the real
      layout. Only when all three sit in one row (wide screens). */
@@ -112,7 +115,7 @@ export default function StageB() {
               <AnimatePresence initial={false} mode="popLayout">
                 {outgoing.map(({ b, i }) => (
                   <motion.div key={'out' + i} layout initial={{ opacity: 0, y: -14, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease, layout: { duration: 0.7, ease } }}>
-                    {b.summary ? <SummaryCard beat={b} /> : <OutCard beat={b} i={i} p={p} current={i === p.index} />}
+                    {b.summary ? <SummaryCard beat={b} /> : <OutCard beat={b} i={i} p={p} current={i === p.index} approving={approving !== null && opOf(b, 'pm')?.id === approving} />}
                   </motion.div>
                 ))}
               </AnimatePresence>
@@ -217,12 +220,15 @@ function entryOf(b: Beat): { title: string; sub: string; amount?: number; strike
   const status = opOf(b, 'status');
   const matched = status && rowById(status.id);
   if (matched) return { title: matched.vendor, sub: matched.item, amount: matched.amount };
+  const approve = opOf(b, 'approve');
+  const approved = approve && pmItem(approve.id);
+  if (approved) return { title: approved.title, sub: 'Approved by Arjun in the CRM', amount: approved.amount ?? undefined };
   const pm = opOf(b, 'pm');
   if (pm) return { title: pm.title, sub: pm.detail, amount: pm.amount ?? undefined };
   return { title: 'Asked in the group', sub: b.reply?.text ?? '' };
 }
 
-function OutCard({ beat, i, p, current }: { beat: Beat; i: number; p: Presenter; current: boolean }) {
+function OutCard({ beat, i, p, current, approving }: { beat: Beat; i: number; p: Presenter; current: boolean; approving: boolean }) {
   const decided = p.reached(i, 'decided');
   const shown = p.checksShown(i);
   const entry = entryOf(beat);
@@ -257,7 +263,7 @@ function OutCard({ beat, i, p, current }: { beat: Beat; i: number; p: Presenter;
         )}
       </AnimatePresence>
 
-      <div className="mt-2.5 flex h-[22px] items-center justify-between gap-2">
+      <div className="mt-2.5 flex h-6 items-center justify-between gap-2">
         {decided ? (
           <motion.span initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className={cn('inline-flex h-[22px] min-w-0 items-center gap-1 rounded-full px-2 text-[11px] font-medium', STATUS[outcome].pill)}>
             <Icon className="h-3 w-3 shrink-0" />
@@ -266,7 +272,7 @@ function OutCard({ beat, i, p, current }: { beat: Beat; i: number; p: Presenter;
         ) : (
           <span className="flex items-center gap-1.5 text-[11px] text-black/45"><BotMark size={14} /> Checking…</span>
         )}
-        <span className="shrink-0 text-[11px] tabular-nums text-black/40">{to12(beat.time)}</span>
+        {approving ? <PmApprove /> : <span className="shrink-0 text-[11px] tabular-nums text-black/40">{to12(beat.time)}</span>}
       </div>
     </div>
   );

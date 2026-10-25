@@ -21,9 +21,11 @@ interface Props {
   waiting: number;
   blocked?: number;
   bills: number;
+  /* the item the PM is about to approve */
+  approving?: string | null;
 }
 
-const CrmWindow = forwardRef<HTMLUListElement, Props>(function CrmWindow({ p, feed, landing, posted, waiting, bills }, listRef) {
+const CrmWindow = forwardRef<HTMLUListElement, Props>(function CrmWindow({ p, feed, landing, posted, waiting, bills, approving }, listRef) {
   return (
     /* same lift as the phone, so the two read as one product */
     <div className="overflow-hidden rounded-[20px] bg-white shadow-[0_2px_0_rgba(0,0,0,0.05),0_40px_70px_-30px_rgba(40,25,10,0.55)] ring-1 ring-black/[0.08]">
@@ -58,7 +60,7 @@ const CrmWindow = forwardRef<HTMLUListElement, Props>(function CrmWindow({ p, fe
 
       {/* feed and reasoning */}
       <div className="grid md:grid-cols-[minmax(0,1fr)_240px] xl:grid-cols-[minmax(0,1fr)_290px]">
-        <BooksFeed ref={listRef} bare items={feed} current={p.index} landing={landing} posted={posted} waiting={waiting} className="md:border-r md:border-black/[0.06]" />
+        <BooksFeed ref={listRef} bare items={feed} current={p.index} landing={landing} posted={posted} waiting={waiting} approving={approving} className="md:border-r md:border-black/[0.06]" />
         <div className="hidden bg-[#fbfaf8] md:block">
           <BotCard bare p={p} />
         </div>

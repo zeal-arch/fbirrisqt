@@ -43,7 +43,9 @@ export type BookOp =
   | { type: 'status'; id: string; status: RowStatus }
   | { type: 'pm'; id: string; title: string; detail: string; amount: number | null }
   | { type: 'progress'; id: string; text: string; by: string }
-  | { type: 'blocked'; id: string; amount: number };
+  | { type: 'blocked'; id: string; amount: number }
+  /* the PM approves an item that was waiting for him; it is then posted */
+  | { type: 'approve'; id: string };
 
 export interface Beat {
   time: string;
@@ -100,6 +102,15 @@ export const HERO_BEATS: Beat[] = [
       { type: 'pm', id: 'RV-11', title: 'Advance to Suresh', detail: 'For kitchen shutters', amount: 15000 },
     ],
     reply: { text: 'Suresh asks ₹15,000 advance for kitchen shutters → Approve / Reject', private: true },
+  },
+  {
+    time: '08:41',
+    caption: 'The PM approves, in one click',
+    message: null,
+    checks: [],
+    decision: { label: 'Approved by Arjun · ₹15,000 posted', tone: 'posted' },
+    ops: [{ type: 'approve', id: 'RV-11' }],
+    reply: { text: 'Suresh ji, ₹15,000 advance Arjun sir ne approve kar diya ✔' },
   },
   {
     time: '10:02',
@@ -186,8 +197,8 @@ export const HERO_BEATS: Beat[] = [
     ops: [],
     summary: [
       '21 messages read · 0 typed by you',
-      '₹43,200 posted · 1 duplicate blocked',
-      '3 decisions waiting: advance, hinges, loft',
+      '₹58,200 posted · 1 duplicate blocked',
+      '2 decisions waiting: hinges, loft',
       'Bill still missing: Imran’s wire (₹8,500)',
     ],
   },
@@ -212,10 +223,26 @@ export function booksFrom(beats: Beat[]): Books {
       else if (op.type === 'status') books.rows = books.rows.map(r => (r.id === op.id ? { ...r, status: op.status } : r));
       else if (op.type === 'pm') books.pm.push({ id: op.id, title: op.title, detail: op.detail, amount: op.amount });
       else if (op.type === 'progress') books.progress.push({ id: op.id, text: op.text, by: op.by });
-      else books.blocked += op.amount;
+      else if (op.type === 'approve') {
+        const item = books.pm.find(x => x.id === op.id);
+        books.pm = books.pm.filter(x => x.id !== op.id);
+        if (item && item.amount !== null) books.rows.push({ id: op.id, vendor: item.title, item: item.detail, amount: item.amount, status: 'posted' });
+      } else books.blocked += op.amount;
     }
   }
   return books;
+}
+
+/* The item a PM decision is about, by its id. */
+export function pmItem(id: string) {
+  for (const b of HERO_BEATS) for (const o of b.ops) if (o.type === 'pm' && o.id === id) return o;
+  return undefined;
+}
+
+/* While beat `index` shows its reply, the item the next beat approves (the PM is about to click Approve). */
+export function nextApproval(index: number): string | null {
+  const op = HERO_BEATS[index + 1]?.ops.find(o => o.type === 'approve');
+  return op ? op.id : null;
 }
 
 export const inr = (n: number) => '₹' + n.toLocaleString('en-IN');

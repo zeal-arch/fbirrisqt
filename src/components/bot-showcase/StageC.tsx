@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { AlertCircle, Check } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { HERO_BEATS, booksFrom, type Tone } from '../../data/botShowcase';
+import { HERO_BEATS, booksFrom, nextApproval, type Tone } from '../../data/botShowcase';
 import type { usePresenter } from '../../hooks/usePresenter';
 import Phone from './Phone';
 import CrmWindow from './CrmWindow';
@@ -123,7 +123,7 @@ export default function StageC() {
           <div className="flex items-center gap-8 [zoom:0.62] sm:[zoom:0.75] lg:[zoom:0.82] xl:[zoom:0.88]">
             <Phone p={p} reducedMotion={false} />
             <div className="hidden w-[600px] shrink-0 lg:block">
-              <CrmWindow p={p} feed={feed} landing posted={posted} waiting={books.pm.length} blocked={books.blocked} bills={bills} />
+              <CrmWindow p={p} feed={feed} landing posted={posted} waiting={books.pm.length} blocked={books.blocked} bills={bills} approving={nextApproval(step)} />
             </div>
           </div>
         </div>

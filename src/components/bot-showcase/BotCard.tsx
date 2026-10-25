@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowRight, Check, ChevronDown, Lock, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { HERO_BEATS, PEOPLE } from '../../data/botShowcase';
+import { HERO_BEATS, PEOPLE, inr, pmItem } from '../../data/botShowcase';
 import type { usePresenter } from '../../hooks/usePresenter';
 import BotMark from './BotMark';
 import { STATUS, statusOfDecision } from './status';
@@ -21,6 +21,8 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
   const replied = p.reached(p.index, 'replied');
   const status = p.phase === 'typing' ? 'Listening' : p.phase === 'message' ? 'Reading' : p.phase === 'checks' ? 'Checking' : 'Done';
   const outcome = statusOfDecision(beat.decision.tone);
+  const approveOp = beat.ops.find(o => o.type === 'approve');
+  const approved = approveOp ? pmItem(approveOp.id) : undefined;
 
   return (
     <div ref={ref} className={cn('p-4', !bare && 'rounded-2xl bg-white/95 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_30px_60px_-30px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.06] backdrop-blur', className)}>
@@ -50,6 +52,17 @@ const BotCard = forwardRef<HTMLDivElement, { p: Presenter; bare?: boolean; class
                   <p className="line-clamp-3 text-[13px] leading-snug text-black/80">
                     {m.kind === 'text' ? m.text : m.kind === 'voice' ? `“${m.transcript}”` : `${m.bill.shop} bill · ${m.bill.lines.join(', ')} · ₹${m.bill.total}`}
                   </p>
+                  {/* a voice note in Hindi-English also gets an English line */}
+                  {m.kind === 'voice' && (
+                    <motion.p initial={{ opacity: 0, y: 3 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.4 }} className="mt-1.5 border-t border-black/[0.06] pt-1.5 text-[12px] leading-snug text-black/60">
+                      <span className="font-medium text-black/75">In English:</span> {m.english}
+                    </motion.p>
+                  )}
+                </div>
+              ) : approved ? (
+                <div className="rounded-xl bg-[#f6f4f1] px-3 py-2.5">
+                  <p className="mb-1 text-[11px] text-black/45"><span className="font-semibold text-black/75">Arjun</span> · in firstbriq CRM · {beat.time}</p>
+                  <p className="text-[13px] leading-snug text-black/80">Approved: {approved.title} · {inr(approved.amount ?? 0)}</p>
                 </div>
               ) : (
                 <p className="text-[16px] font-medium">{beat.time} · End of day</p>
