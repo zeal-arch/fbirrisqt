@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { ArrowUpRight } from 'lucide-react';
+import ArrowSwap from './ArrowSwap';
 import { FirstbriqLogo } from '../ui/FirstbriqLogo';
 import { VOLUNTEER_MAILTO } from '../../data/botShowcase';
 import Stage from './Stage';
@@ -26,7 +26,7 @@ export default function Hero({ design = 'b' }: { design?: 'a' | 'b' | 'c' }) {
           <span className="h-5 w-px bg-black/15" aria-hidden="true" />
           <span className="text-[15px] font-medium tracking-[-0.01em]">Site Bot</span>
         </span>
-        <a href={VOLUNTEER_MAILTO} className="group transition-[transform,background-color,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 active:scale-[0.97] motion-reduce:transform-none hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] inline-flex h-9 items-center rounded-full bg-black px-4 text-[14px] font-medium text-white hover:bg-black/85">
+        <a href={VOLUNTEER_MAILTO} className="group transition-colors inline-flex h-9 items-center rounded-full bg-black px-4 text-[14px] font-medium text-white hover:bg-black/85">
           Volunteer a site
         </a>
       </header>
@@ -47,11 +47,11 @@ export default function Hero({ design = 'b' }: { design?: 'a' | 'b' | 'c' }) {
 
         <motion.div {...fadeUp(0.24)} className="shrink-0">
           <span className="flex flex-wrap items-center gap-3">
-            <a href={VOLUNTEER_MAILTO} className="group transition-[transform,background-color,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 active:scale-[0.97] motion-reduce:transform-none hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] inline-flex h-10 items-center gap-2.5 rounded-full bg-black py-1 pl-5 pr-1 text-[14px] font-normal text-white hover:bg-black/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
+            <a href={VOLUNTEER_MAILTO} className="group transition-colors inline-flex h-10 items-center gap-2.5 rounded-full bg-black py-1 pl-5 pr-1 text-[14px] font-normal text-white hover:bg-black/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
               Volunteer your site
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-white/15 transition-colors duration-200 group-hover:bg-white/25"><ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></span>
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-white/15 transition-colors duration-200 group-hover:bg-white/25"><ArrowSwap className="h-3.5 w-3.5" /></span>
             </a>
-            <a href="#stage" className="group transition-[transform,background-color,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 active:scale-[0.97] motion-reduce:transform-none inline-flex h-10 items-center rounded-full bg-black/[0.05] px-5 text-[14px] text-black hover:bg-black/[0.08]">
+            <a href="#stage" className="transition-colors inline-flex h-10 items-center rounded-full bg-black/[0.05] px-5 text-[14px] text-black hover:bg-black/[0.08]">
               Watch a day on site
             </a>
           </span>

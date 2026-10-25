@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react';
-import { ArrowUpRight, Banknote, CheckCircle2 } from 'lucide-react';
+import { Banknote, CheckCircle2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { HERO_BEATS, VOLUNTEER_MAILTO, type ChatMessage } from '../../data/botShowcase';
 import { BotBubble, MessageBubble } from './ChatParts';
+import ArrowSwap from './ArrowSwap';
 import BotMark from './BotMark';
 import Backdrop from './Backdrop';
 import PmApprove from './PmApprove';
@@ -215,9 +216,9 @@ function PilotSection() {
           <p className="text-[13px] font-medium text-black/55">The pilot</p>
           <h2 className="mt-3 font-display text-[38px] font-normal leading-[1.05] tracking-[-0.04em] md:text-[58px]">We’re looking for 5 sites.</h2>
           <p className="mx-auto mt-5 max-w-[460px] text-[18px] leading-[1.4] text-black/65">Two weeks. One WhatsApp group. You can stop anytime.</p>
-          <a href={VOLUNTEER_MAILTO} className="group transition-[transform,background-color,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 active:scale-[0.97] motion-reduce:transform-none hover:shadow-[0_10px_24px_-10px_rgba(0,0,0,0.5)] mt-10 inline-flex h-12 items-center gap-3 rounded-full bg-black py-1 pl-6 pr-1.5 text-[15px] text-white hover:bg-black/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
+          <a href={VOLUNTEER_MAILTO} className="group transition-colors mt-10 inline-flex h-12 items-center gap-3 rounded-full bg-black py-1 pl-6 pr-1.5 text-[15px] text-white hover:bg-black/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
             Volunteer your site
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-white/15 transition-colors duration-200 group-hover:bg-white/25"><ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></span>
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-white/15 transition-colors duration-200 group-hover:bg-white/25"><ArrowSwap className="h-4 w-4" /></span>
           </a>
         </div>
       </motion.div>

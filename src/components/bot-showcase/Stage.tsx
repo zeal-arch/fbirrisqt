@@ -62,7 +62,7 @@ export default function Stage() {
           </div>
 
           {/* out: into the firstbriq CRM */}
-          <div className="relative z-10 flex h-[560px] w-full max-w-[340px] shrink-0 flex-col lg:w-[300px]">
+          <div className="relative z-10 flex h-[560px] w-full max-w-[400px] shrink-0 flex-col lg:w-[340px] xl:w-[380px]">
             <ColumnLabel>Into firstbriq CRM</ColumnLabel>
             <CrmTotals posted={posted} waiting={books.pm.length} bills={bills} />
             <div className="mt-3 flex flex-col gap-3 [mask-image:linear-gradient(to_bottom,#000_82%,transparent)]">
