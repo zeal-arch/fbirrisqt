@@ -10,8 +10,8 @@ import Backdrop from './Backdrop';
 import PmApprove from './PmApprove';
 import { STATUS } from './status';
 import wallpaper from '../../assets/chat-wallpaper.webp';
-import hariomBill from '../../assets/bills/hariom-stationers.webp';
-import kailashBill from '../../assets/bills/kailash-traders.webp';
+import ganeshBill from '../../assets/bills/ganesh-traders.webp';
+import gujaratBill from '../../assets/bills/gujarat-freight-tools.webp';
 import surabhiBill from '../../assets/bills/surabhi-hardwares.webp';
 
 /* Sections 2 to 5, each answering the next question a PM has after the hero:
@@ -67,7 +67,7 @@ function SendSection() {
       </Heading>
 
       <div className="mt-16">
-        <Row title="It reads the bill, even handwritten." body="Printed invoices or a shopkeeper’s handwriting: it reads the items, rates and GST, and checks the maths before anything is posted. On this stationery bill, ₹3,350 + 18% GST = ₹3,953, exactly as written.">
+        <Row title="It reads every bill." body="Tax invoices, GST bills, even a shopkeeper’s handwriting: it reads the items, rates and tax, and checks the maths before anything is posted. On this tools invoice, ₹3,805 + 18% IGST = ₹4,490, exactly as printed.">
           {live => <BillFan live={live} />}
         </Row>
         <Row title="It listens, in Hinglish." body="Kitchen carcass done is logged as progress. The ₹15,000 advance for the shutters goes to the PM; it is never paid on its own.">
@@ -106,12 +106,11 @@ function Row({ title, body, children }: { title: string; body: string; children:
   );
 }
 
-/* Real bills fanned out like photos on a table: two handwritten, one printed. The front one gets scanned once
-   the row is on screen. */
+/* Bills fanned out like photos on a table. The front one gets scanned once the row is on screen. */
 const FAN = [
-  { src: kailashBill, alt: 'Handwritten bill from a paint and hardware shop', className: 'left-0 top-4 -rotate-[9deg]' },
+  { src: ganeshBill, alt: 'Printed tax invoice from a trader', className: 'left-0 top-4 -rotate-[9deg]' },
   { src: surabhiBill, alt: 'Printed tax invoice from a hardware shop', className: 'right-0 top-3 rotate-[8deg]' },
-  { src: hariomBill, alt: 'Handwritten stationery bill totalling ₹3,953', className: 'left-1/2 top-0 -translate-x-1/2 rotate-[-1deg]' },
+  { src: gujaratBill, alt: 'Tax invoice for two tool kits totalling ₹4,490', className: 'left-1/2 top-0 -translate-x-1/2 rotate-[-1deg]' },
 ];
 
 function BillFan({ live }: { live: boolean }) {
@@ -136,7 +135,7 @@ function BillFan({ live }: { live: boolean }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.6, duration: 0.3 }}
               >
-                <BotMark size={11} /> Read · ₹3,953
+                <BotMark size={11} /> Read · ₹4,490
               </motion.span>
             </>
           )}
