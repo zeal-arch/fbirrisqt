@@ -2,8 +2,8 @@
    Everything here is a scripted example: names, shops and amounts are illustrative.
    The messages come from the full interactive demo (../bot-demo.html), trimmed for the hero. */
 
-import surabhiBill from '../assets/bills/surabhi-hardwares.webp';
-import toolsBill from '../assets/bills/gujarat-freight-tools.webp';
+import plyBillPhoto from '../assets/bills/kailash-traders.webp';
+import toolsBillPhoto from '../assets/bills/ganesh-traders.webp';
 
 export type PersonId = 'arjun' | 'suresh' | 'raju' | 'imran' | 'manju' | 'deepak' | 'rao';
 
@@ -65,7 +65,7 @@ export interface Beat {
 }
 
 const TOOLS_BILL: Bill = {
-  photo: toolsBill,
+  photo: toolsBillPhoto,
   shop: 'Gujarat Freight Tools',
   address: 'Waghle Industrial Estate, Mumbai',
   number: 'GST-3425-26',
@@ -74,7 +74,7 @@ const TOOLS_BILL: Bill = {
 };
 
 const RAJU_BILL: Bill = {
-  photo: surabhiBill,
+  photo: plyBillPhoto,
   shop: 'Surabhi Hardwares',
   address: 'Plywood · Laminates · HSR Layout',
   number: '1184',

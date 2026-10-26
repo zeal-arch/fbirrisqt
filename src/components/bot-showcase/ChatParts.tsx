@@ -97,7 +97,7 @@ export function BillPhoto({ bill, scan = false }: { bill: Bill; scan?: boolean }
       aria-label={`Photo of a bill from ${bill.shop}, total ₹${bill.total}`}
     >
       {bill.photo ? (
-        <img src={bill.photo} alt="" className="absolute inset-0 h-full w-full object-cover object-top" />
+        <img src={bill.photo} alt="" draggable={false} onDragStart={e => e.preventDefault()} className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover object-top [-webkit-user-drag:none]" />
       ) : (
       <div
         className="absolute left-[16px] top-[11px] w-[136px] -rotate-[4deg] bg-[#fbf8ef] px-2.5 py-2 font-hand text-[9.5px] leading-[14px] text-[#1e3a8a] shadow-[0_10px_18px_rgba(0,0,0,.5)]"

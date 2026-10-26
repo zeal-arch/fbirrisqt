@@ -24,7 +24,7 @@ npm run build    # static site in dist/
 | `src/components/bot-showcase/StageA.tsx`, `StageC.tsx`, `CrmWindow.tsx`, `BotCard.tsx`, `BooksFeed.tsx` | Alternative stages kept for comparison: A (phone and full CRM side by side, `?design=a`) and C (scroll story, `?design=c`) |
 | `src/components/bot-showcase/Sections.tsx` | Below the hero: the pilot call to action, with Briq waving |
 | `src/components/bot-showcase/Briq.tsx` | Briq, Site Bot's mascot: a brick in a site helmet, waving and holding a bill (one SVG, animated) |
-| `src/assets/bills/` | Bill photos used in the chat (Surabhi Hardwares, Gujarat Freight Tools) |
+| `src/assets/bills/` | Bill photos shown in the chat (only the pictures; the chat text is the script) |
 | `src/components/bot-showcase/Controls.tsx` | Play / Step / Restart under the stage |
 | `src/components/bot-showcase/AnimatedNumber.tsx` | Numbers that count up instead of jumping |
 | `src/components/bot-showcase/PmApprove.tsx` | The PM's cursor clicking Approve in the CRM, before an advance is posted |
