@@ -2,8 +2,7 @@
 
 A single hero page for the WhatsApp site bot, set in Geist (a free grotesk close to summation.com's Bureau Sans).
 Below the headline, the product plays one site day: a script line, an iPhone with the site's WhatsApp group, and what
-Site Bot files in the firstbriq CRM. Four sections follow, each answering a PM's next question, and end with the pilot
-call to action. Built on the same stack as the firstbriq frontend (Vite, React 19, TypeScript, Tailwind 4,
+Site Bot files in the firstbriq CRM. The pilot call to action follows, with Briq, the bot's mascot. Built on the same stack as the firstbriq frontend (Vite, React 19, TypeScript, Tailwind 4,
 `motion`, `lucide-react`) so it can be moved in without changes.
 Everything on it is a scripted example; no real AI or WhatsApp account is connected.
 
@@ -23,7 +22,9 @@ npm run build    # static site in dist/
 | `src/components/bot-showcase/Hero.tsx` | Header, headline, call to action |
 | `src/components/bot-showcase/Stage.tsx` | The hero stage: a script line over an iPhone with the site's WhatsApp group, and what Site Bot files in the firstbriq CRM beside it |
 | `src/components/bot-showcase/StageA.tsx`, `StageC.tsx`, `CrmWindow.tsx`, `BotCard.tsx`, `BooksFeed.tsx` | Alternative stages kept for comparison: A (phone and full CRM side by side, `?design=a`) and C (scroll story, `?design=c`) |
-| `src/components/bot-showcase/Sections.tsx` | Sections 2–5: what it reads, money safety, nothing changes for your team, and the pilot call to action |
+| `src/components/bot-showcase/Sections.tsx` | Below the hero: the pilot call to action, with Briq waving |
+| `src/components/bot-showcase/Briq.tsx` | Briq, Site Bot's mascot: a brick in a site helmet, waving and holding a bill (one SVG, animated) |
+| `src/assets/bills/` | Bill photos used in the chat (Surabhi Hardwares, Gujarat Freight Tools) |
 | `src/components/bot-showcase/Controls.tsx` | Play / Step / Restart under the stage |
 | `src/components/bot-showcase/AnimatedNumber.tsx` | Numbers that count up instead of jumping |
 | `src/components/bot-showcase/PmApprove.tsx` | The PM's cursor clicking Approve in the CRM, before an advance is posted |

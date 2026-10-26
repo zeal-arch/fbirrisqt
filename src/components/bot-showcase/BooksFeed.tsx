@@ -79,6 +79,7 @@ const LOGO: Record<string, { icon: LucideIcon; tint: string }> = {
   'PUR-301': { icon: Layers, tint: '#efe6da' },
   'PUR-303': { icon: Zap, tint: '#eceef3' },
   'PUR-304': { icon: Wrench, tint: '#ece8f1' },
+  'PUR-305': { icon: Hammer, tint: '#e8edf0' },
   'RV-11': { icon: Banknote, tint: '#e9efe9' },
   'RV-14': { icon: Ruler, tint: '#f1e9e4' },
   'PRG-88': { icon: Hammer, tint: '#eee9df' },

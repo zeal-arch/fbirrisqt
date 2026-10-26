@@ -3,6 +3,7 @@
    The messages come from the full interactive demo (../bot-demo.html), trimmed for the hero. */
 
 import surabhiBill from '../assets/bills/surabhi-hardwares.webp';
+import toolsBill from '../assets/bills/gujarat-freight-tools.webp';
 
 export type PersonId = 'arjun' | 'suresh' | 'raju' | 'imran' | 'manju' | 'deepak' | 'rao';
 
@@ -62,6 +63,15 @@ export interface Beat {
   reply?: { text: string; private?: boolean };
   summary?: string[];
 }
+
+const TOOLS_BILL: Bill = {
+  photo: toolsBill,
+  shop: 'Gujarat Freight Tools',
+  address: 'Waghle Industrial Estate, Mumbai',
+  number: 'GST-3425-26',
+  lines: ['Bosch hand tool kit', 'Taparia tool kit'],
+  total: '4,490',
+};
 
 const RAJU_BILL: Bill = {
   photo: surabhiBill,
@@ -182,6 +192,19 @@ export const HERO_BEATS: Beat[] = [
     reply: { text: 'Hettich hinges at ₹980/pc (usual ₹350–450). Total ₹39,200 → please check.', private: true },
   },
   {
+    time: '14:20',
+    caption: 'A clean bill goes straight in',
+    message: { kind: 'bill', from: 'suresh', bill: TOOLS_BILL },
+    checks: [
+      { text: 'Bill read: 3,805 + 18% IGST = 4,490', ok: true },
+      { text: 'Tools for HSR 3BHK, sent by Suresh', ok: true },
+      { text: 'Normal price · under ₹50,000', ok: true },
+    ],
+    decision: { label: 'Posted automatically', tone: 'posted' },
+    ops: [{ type: 'row', id: 'PUR-305', vendor: 'Gujarat Freight Tools', item: 'Tool kits · 2', amount: 4490, status: 'posted' }],
+    reply: { text: 'Bill received ✔ ₹4,490 entered (Gujarat Freight Tools).' },
+  },
+  {
     time: '14:30',
     caption: 'The homeowner asks for a change',
     message: { kind: 'text', from: 'rao', text: 'Arjun ji, master bedroom wardrobe mein loft bhi chahiye. Possible hai?' },
@@ -202,7 +225,7 @@ export const HERO_BEATS: Beat[] = [
     ops: [],
     summary: [
       '21 messages read · 0 typed by you',
-      '₹19,130 posted · 1 duplicate blocked',
+      '₹23,620 posted · 1 duplicate blocked',
       '2 decisions waiting: hinges, loft',
       'Bill still missing: Imran’s wire (₹8,500)',
     ],

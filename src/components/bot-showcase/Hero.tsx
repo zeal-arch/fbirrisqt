@@ -3,6 +3,7 @@ import ArrowSwap from './ArrowSwap';
 import { FirstbriqLogo } from '../ui/FirstbriqLogo';
 import { VOLUNTEER_MAILTO } from '../../data/botShowcase';
 import Stage from './Stage';
+import Briq from './Briq';
 import StageA from './StageA';
 import StageC from './StageC';
 
@@ -33,11 +34,17 @@ export default function Hero({ design = 'b' }: { design?: 'a' | 'b' | 'c' }) {
 
       {/* summation.com-style intro: left-aligned headline, then the text and the buttons on one row */}
       <div className="mx-auto max-w-7xl px-4 pb-16 pt-14 text-left md:px-8 md:pt-[72px]">
-        <motion.h1 {...fadeUp(0.08)} className="max-w-[760px] font-display text-[34px] font-normal leading-[1.05] tracking-[-0.04em] min-[810px]:text-[42px] min-[1200px]:text-[52px] min-[1400px]:text-[58px]">
-          Your site runs on WhatsApp.
-          <br />
-          Now your books do too.
-        </motion.h1>
+        {/* the headline, with Briq waving on the right above the buttons */}
+        <div className="flex items-end justify-between gap-8">
+          <motion.h1 {...fadeUp(0.08)} className="max-w-[760px] font-display text-[34px] font-normal leading-[1.05] tracking-[-0.04em] min-[810px]:text-[42px] min-[1200px]:text-[52px] min-[1400px]:text-[58px]">
+            Your site runs on WhatsApp.
+            <br />
+            Now your books do too.
+          </motion.h1>
+          <motion.div {...fadeUp(0.3)} className="mr-6 hidden shrink-0 md:block">
+            <Briq size={128} />
+          </motion.div>
+        </div>
 
         {/* the description on the left, the buttons on the right of the same row */}
         <div className="mt-6 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
