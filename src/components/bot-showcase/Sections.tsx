@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { VOLUNTEER_MAILTO } from '../../data/botShowcase';
 import ArrowSwap from './ArrowSwap';
 import Backdrop from './Backdrop';
-import Briq from './Briq';
+import Mascot from './Mascot';
 
 /* Below the hero: the pilot call to action, with Briq waving, and the scripted-example note. */
 
@@ -21,7 +21,7 @@ export default function Sections() {
         >
           <Backdrop />
           <div className="relative">
-            <Briq size={132} className="mx-auto" />
+            <Mascot size={170} className="mx-auto" />
             <p className="mt-6 text-[13px] font-medium text-black/55">The pilot</p>
             <h2 className="mt-3 font-display text-[38px] font-normal leading-[1.05] tracking-[-0.04em] md:text-[58px]">We’re looking for 5 sites.</h2>
             <p className="mx-auto mt-5 max-w-[460px] text-[18px] leading-[1.4] text-black/65">Two weeks. One WhatsApp group. You can stop anytime.</p>

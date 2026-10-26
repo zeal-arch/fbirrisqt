@@ -3,7 +3,7 @@
 A single hero page for the WhatsApp site bot, set in Geist (a free grotesk close to summation.com's Bureau Sans).
 Below the headline, the product plays one site day: a script line, an iPhone with the site's WhatsApp group, and what
 Site Bot files in the firstbriq CRM. The pilot call to action follows, with Briq, the bot's mascot. Built on the same stack as the firstbriq frontend (Vite, React 19, TypeScript, Tailwind 4,
-`motion`, `lucide-react`) so it can be moved in without changes.
+`motion`, `lucide-react`; plus `three`, `@react-three/fiber` and `@react-three/drei` for the 3D mascot) so it can be moved in without changes.
 Everything on it is a scripted example; no real AI or WhatsApp account is connected.
 
 ## Run it
@@ -23,6 +23,7 @@ npm run build    # static site in dist/
 | `src/components/bot-showcase/Stage.tsx` | The hero stage: a script line over an iPhone with the site's WhatsApp group, and what Site Bot files in the firstbriq CRM beside it |
 | `src/components/bot-showcase/StageA.tsx`, `StageC.tsx`, `CrmWindow.tsx`, `BotCard.tsx`, `BooksFeed.tsx` | Alternative stages kept for comparison: A (phone and full CRM side by side, `?design=a`) and C (scroll story, `?design=c`) |
 | `src/components/bot-showcase/Sections.tsx` | Below the hero: the pilot call to action, with Briq waving |
+| `src/components/bot-showcase/Briq3D.tsx`, `Mascot.tsx` | Briq in 3D (Three.js via react-three-fiber): waves, blinks and turns towards the pointer. Loaded separately; the flat drawing shows while it loads or if the browser has no WebGL |
 | `src/components/bot-showcase/Briq.tsx` | Briq, Site Bot's mascot: a brick in a site helmet, waving and holding a bill (one SVG, animated) |
 | `src/assets/bills/` | Bill photos shown in the chat (only the pictures; the chat text is the script) |
 | `src/components/bot-showcase/Controls.tsx` | Play / Step / Restart under the stage |

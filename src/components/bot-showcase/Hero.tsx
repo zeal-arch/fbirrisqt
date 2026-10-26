@@ -3,7 +3,7 @@ import ArrowSwap from './ArrowSwap';
 import { FirstbriqLogo } from '../ui/FirstbriqLogo';
 import { VOLUNTEER_MAILTO } from '../../data/botShowcase';
 import Stage from './Stage';
-import Briq from './Briq';
+import Mascot from './Mascot';
 import StageA from './StageA';
 import StageC from './StageC';
 
@@ -41,8 +41,8 @@ export default function Hero({ design = 'b' }: { design?: 'a' | 'b' | 'c' }) {
             <br />
             Now your books do too.
           </motion.h1>
-          <motion.div {...fadeUp(0.3)} className="mr-6 hidden shrink-0 md:block">
-            <Briq size={128} />
+          <motion.div {...fadeUp(0.3)} className="-mb-6 mr-2 hidden shrink-0 md:block">
+            <Mascot size={170} />
           </motion.div>
         </div>
 
