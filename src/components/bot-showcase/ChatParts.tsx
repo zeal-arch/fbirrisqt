@@ -82,8 +82,9 @@ function ReadBox({ delay }: { delay: number }) {
   );
 }
 
-/* A phone photo of a handwritten bill on a wooden table. With `scan`, Site Bot reads it: a light sweeps down
-   the photo, then the shop, the items and the total are boxed one by one. */
+/* A bill as a photo in the chat: the real photo when the bill has one, otherwise a drawn handwritten bill on a
+   wooden table. With `scan`, Site Bot reads it: a light sweeps down the photo (on the drawn bill, the shop, the
+   items and the total are also boxed one by one), then a "Read" tag appears. */
 export function BillPhoto({ bill, scan = false }: { bill: Bill; scan?: boolean }) {
   return (
     <div
@@ -93,8 +94,11 @@ export function BillPhoto({ bill, scan = false }: { bill: Bill; scan?: boolean }
           'radial-gradient(ellipse at 70% 15%,rgba(255,240,210,.35),transparent 55%),repeating-linear-gradient(97deg,rgba(0,0,0,.07) 0 2px,transparent 2px 11px),linear-gradient(160deg,#8a6240,#6e4b2f 55%,#4f341f)',
       }}
       role="img"
-      aria-label={`Photo of a handwritten bill from ${bill.shop}, total ₹${bill.total}`}
+      aria-label={`Photo of a bill from ${bill.shop}, total ₹${bill.total}`}
     >
+      {bill.photo ? (
+        <img src={bill.photo} alt="" className="absolute inset-0 h-full w-full object-cover object-top" />
+      ) : (
       <div
         className="absolute left-[16px] top-[11px] w-[136px] -rotate-[4deg] bg-[#fbf8ef] px-2.5 py-2 font-hand text-[9.5px] leading-[14px] text-[#1e3a8a] shadow-[0_10px_18px_rgba(0,0,0,.5)]"
         style={{ backgroundImage: 'repeating-linear-gradient(transparent 0 13px,#cfdcec 13px 14px)' }}
@@ -106,8 +110,9 @@ export function BillPhoto({ bill, scan = false }: { bill: Bill; scan?: boolean }
         <div className="relative mt-1 border-t border-[#1e3a8a] font-bold">Total ₹ {bill.total}/-{scan && <ReadBox delay={1.65} />}</div>
         <div className="absolute bottom-2 right-3 -rotate-12 text-[13px] opacity-80">{bill.shop.split(' ')[0]}</div>
       </div>
-      {/* lens vignette and the slight blur of a phone photo */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,.35))]" />
+      )}
+      {/* lens vignette and the slight blur of a phone photo (a real photo already has its own) */}
+      {!bill.photo && <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,.35))]" />}
       <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/45 to-transparent" />
       {scan && (
         <>

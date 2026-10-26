@@ -2,6 +2,8 @@
    Everything here is a scripted example: names, shops and amounts are illustrative.
    The messages come from the full interactive demo (../bot-demo.html), trimmed for the hero. */
 
+import surabhiBill from '../assets/bills/surabhi-hardwares.webp';
+
 export type PersonId = 'arjun' | 'suresh' | 'raju' | 'imran' | 'manju' | 'deepak' | 'rao';
 
 export interface Person {
@@ -13,7 +15,7 @@ export interface Person {
 export const PEOPLE: Record<PersonId, Person> = {
   arjun: { name: 'Arjun', role: 'Project manager', color: '#075491' },
   suresh: { name: 'Suresh', role: 'Carpenter', color: '#b26a00' },
-  raju: { name: 'Raju', role: 'Raju Traders · ply', color: '#1f7a4a' },
+  raju: { name: 'Raju', role: 'Surabhi Hardwares', color: '#1f7a4a' },
   imran: { name: 'Imran', role: 'Electrician', color: '#c8372d' },
   manju: { name: 'Manju', role: 'Sri Lakshmi Tiles', color: '#0f7a8a' },
   deepak: { name: 'Deepak', role: 'Deepak Hardware', color: '#7a6420' },
@@ -21,6 +23,8 @@ export const PEOPLE: Record<PersonId, Person> = {
 };
 
 export interface Bill {
+  /* a real photo of the bill; without one, the bill is drawn */
+  photo?: string;
   shop: string;
   address: string;
   number: string;
@@ -60,11 +64,12 @@ export interface Beat {
 }
 
 const RAJU_BILL: Bill = {
-  shop: 'Raju Traders',
+  photo: surabhiBill,
+  shop: 'Surabhi Hardwares',
   address: 'Plywood · Laminates · HSR Layout',
   number: '1184',
-  lines: ['BWP 18mm (Century)', '16 sheet × 2,700'],
-  total: '43,200',
+  lines: ['12mm ply', '7 No × 500 + GST'],
+  total: '4,130',
 };
 
 /* The hero's live example: one site group, one working day. */
@@ -72,15 +77,15 @@ export const HERO_BEATS: Beat[] = [
   {
     time: '08:12',
     caption: 'A purchase, mentioned in passing',
-    message: { kind: 'text', from: 'raju', text: 'Bhai 16 sheet 18mm BWP bhej diya HSR site pe, 2700 rate, total 43200. Bill shaam ko bhejta hu' },
+    message: { kind: 'text', from: 'raju', text: 'Bhai 7 sheet 12mm ply bhej diya HSR site pe, 500 rate, GST ke saath 4130. Bill shaam ko bhejta hu' },
     checks: [
       { text: 'Plywood purchase for HSR 3BHK', ok: true },
-      { text: '16 × 2,700 = 43,200', ok: true },
+      { text: '7 × 500 + 18% GST = 4,130', ok: true },
       { text: 'No bill yet', ok: false },
     ],
     decision: { label: 'Claimed · waiting for bill', tone: 'claimed' },
-    ops: [{ type: 'row', id: 'PUR-301', vendor: 'Raju Traders', item: 'BWP ply 18mm · 16 sheets', amount: 43200, status: 'claimed' }],
-    reply: { text: 'Noted ✔ 16 sheets 18mm BWP, ₹43,200 (Raju Traders). Bill aane par final karenge.' },
+    ops: [{ type: 'row', id: 'PUR-301', vendor: 'Surabhi Hardwares', item: '12mm ply · 7 sheets', amount: 4130, status: 'claimed' }],
+    reply: { text: 'Noted ✔ 7 sheets 12mm ply, ₹4,130 (Surabhi Hardwares). Bill aane par final karenge.' },
   },
   {
     time: '08:30',
@@ -141,13 +146,13 @@ export const HERO_BEATS: Beat[] = [
     caption: 'The bill arrives and matches',
     message: { kind: 'bill', from: 'raju', bill: RAJU_BILL },
     checks: [
-      { text: 'Bill read: 16 × 2,700 = 43,200', ok: true },
+      { text: 'Bill read: 7 × 500 + GST = 4,130', ok: true },
       { text: 'Matches the 08:12 claim', ok: true },
       { text: 'Normal rate · under ₹50,000', ok: true },
     ],
     decision: { label: 'Posted automatically', tone: 'posted' },
     ops: [{ type: 'status', id: 'PUR-301', status: 'posted' }],
-    reply: { text: 'Bill received ✔ ₹43,200 entered (Raju Traders).' },
+    reply: { text: 'Bill received ✔ ₹4,130 entered (Surabhi Hardwares).' },
   },
   {
     time: '12:41',
@@ -158,7 +163,7 @@ export const HERO_BEATS: Beat[] = [
       { text: 'Not counted again', ok: true },
     ],
     decision: { label: 'Duplicate blocked', tone: 'blocked' },
-    ops: [{ type: 'blocked', id: 'DUP-1', amount: 43200 }],
+    ops: [{ type: 'blocked', id: 'DUP-1', amount: 4130 }],
     reply: { text: 'Ye bill pehle hi note ho gaya hai ✔' },
   },
   {
@@ -197,7 +202,7 @@ export const HERO_BEATS: Beat[] = [
     ops: [],
     summary: [
       '21 messages read · 0 typed by you',
-      '₹58,200 posted · 1 duplicate blocked',
+      '₹19,130 posted · 1 duplicate blocked',
       '2 decisions waiting: hinges, loft',
       'Bill still missing: Imran’s wire (₹8,500)',
     ],

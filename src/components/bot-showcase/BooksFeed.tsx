@@ -60,7 +60,7 @@ export function buildFeed(reached: (i: number) => boolean): FeedItem[] {
           items.unshift({ ...it, signal: 'Approved by Arjun', tone: 'posted', at: i });
         }
       } else {
-        items.unshift({ key: op.id, title: 'Raju Traders', sub: 'Same bill photo again', amount: op.amount, signal: 'Duplicate blocked', tone: 'blocked', at: i });
+        items.unshift({ key: op.id, title: 'Surabhi Hardwares', sub: 'Same bill photo again', amount: op.amount, signal: 'Duplicate blocked', tone: 'blocked', at: i });
       }
     }
   });

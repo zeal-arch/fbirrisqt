@@ -140,7 +140,7 @@ function rowById(id: string) {
 /* The entry's title, detail and amount, from what the bot wrote to the books. */
 function entryOf(b: Beat): { title: string; sub: string; amount?: number; strike?: boolean } {
   const blocked = opOf(b, 'blocked');
-  if (blocked) return { title: 'Raju Traders', sub: 'Same bill photo, sent again', amount: blocked.amount, strike: true };
+  if (blocked) return { title: 'Surabhi Hardwares', sub: 'Same bill photo, sent again', amount: blocked.amount, strike: true };
   const row = opOf(b, 'row');
   if (row) return { title: row.vendor, sub: row.item, amount: row.amount };
   const status = opOf(b, 'status');

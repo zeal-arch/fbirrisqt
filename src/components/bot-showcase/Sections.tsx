@@ -10,6 +10,9 @@ import Backdrop from './Backdrop';
 import PmApprove from './PmApprove';
 import { STATUS } from './status';
 import wallpaper from '../../assets/chat-wallpaper.webp';
+import hariomBill from '../../assets/bills/hariom-stationers.webp';
+import kailashBill from '../../assets/bills/kailash-traders.webp';
+import surabhiBill from '../../assets/bills/surabhi-hardwares.webp';
 
 /* Sections 2 to 5, each answering the next question a PM has after the hero:
    2. Will it understand my group?   3. Will it mess up money?
@@ -25,7 +28,6 @@ const reveal = {
 };
 
 const beatOf = (test: (m: ChatMessage) => boolean) => HERO_BEATS.find(b => b.message && test(b.message))!;
-const BILL = beatOf(m => m.kind === 'bill');
 const VOICE = beatOf(m => m.kind === 'voice');
 const ASK = HERO_BEATS.find(b => b.decision.tone === 'ask')!;
 const ANSWER = HERO_BEATS[HERO_BEATS.indexOf(ASK) + 1];
@@ -65,8 +67,8 @@ function SendSection() {
       </Heading>
 
       <div className="mt-16">
-        <Row title="It reads the bill." body="16 sheets × ₹2,700 = ₹43,200 from Raju Traders. It matches the purchase Raju mentioned at 8:12 am, so it is posted to Material.">
-          {live => <MessageBubble key={String(live)} message={BILL.message!} time={BILL.time} first live={live} />}
+        <Row title="It reads the bill, even handwritten." body="Printed invoices or a shopkeeper’s handwriting: it reads the items, rates and GST, and checks the maths before anything is posted. On this stationery bill, ₹3,350 + 18% GST = ₹3,953, exactly as written.">
+          {live => <BillFan live={live} />}
         </Row>
         <Row title="It listens, in Hinglish." body="Kitchen carcass done is logged as progress. The ₹15,000 advance for the shutters goes to the PM; it is never paid on its own.">
           {live => <MessageBubble key={String(live)} message={VOICE.message!} time={VOICE.time} first live={live} />}
@@ -101,6 +103,46 @@ function Row({ title, body, children }: { title: string; body: string; children:
         <p className="mt-4 max-w-[460px] text-[17px] leading-[1.45] text-black/60">{body}</p>
       </div>
     </motion.div>
+  );
+}
+
+/* Real bills fanned out like photos on a table: two handwritten, one printed. The front one gets scanned once
+   the row is on screen. */
+const FAN = [
+  { src: kailashBill, alt: 'Handwritten bill from a paint and hardware shop', className: 'left-0 top-4 -rotate-[9deg]' },
+  { src: surabhiBill, alt: 'Printed tax invoice from a hardware shop', className: 'right-0 top-3 rotate-[8deg]' },
+  { src: hariomBill, alt: 'Handwritten stationery bill totalling ₹3,953', className: 'left-1/2 top-0 -translate-x-1/2 rotate-[-1deg]' },
+];
+
+function BillFan({ live }: { live: boolean }) {
+  return (
+    <div className="relative mx-auto h-[210px] w-[240px]">
+      {FAN.map((b, i) => (
+        <div key={b.alt} className={cn('absolute w-[128px] overflow-hidden rounded-[4px] bg-white shadow-[0_10px_22px_-8px_rgba(0,0,0,0.45)] ring-1 ring-black/[0.06]', b.className)}>
+          <img src={b.src} alt={b.alt} className="block h-auto w-full" />
+          {i === FAN.length - 1 && live && (
+            <>
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-0 h-12"
+                style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.35) 80%, rgba(255,255,255,0.95) 86%, rgba(255,255,255,0) 90%)' }}
+                initial={{ y: -48, opacity: 0 }}
+                animate={{ y: [-48, 190], opacity: [0, 1, 1, 0] }}
+                transition={{ delay: 0.3, duration: 1.1, ease: 'easeInOut', opacity: { delay: 0.3, duration: 1.1, times: [0, 0.1, 0.85, 1] } }}
+              />
+              <motion.span
+                className="absolute bottom-1.5 left-1.5 flex items-center gap-1 rounded-full bg-white/95 py-0.5 pl-0.5 pr-1.5 text-[8.5px] font-medium text-[#111b21] shadow-sm"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.6, duration: 0.3 }}
+              >
+                <BotMark size={11} /> Read · ₹3,953
+              </motion.span>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }
 
